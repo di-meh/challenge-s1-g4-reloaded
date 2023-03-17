@@ -4,6 +4,8 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import UpdateUserView from "@/views/UpdateUserView.vue";
+import AnnonceView from "@/views/AnnonceView.vue";
+import NewAnnoncesView from "@/views/NewAnnoncesView.vue";
 import { useCookies } from "@vueuse/integrations/useCookies";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
@@ -28,6 +30,16 @@ const router = createRouter({
       path: "/register",
       name: "register",
       component: RegisterView,
+    },
+    {
+      path: "/annonces",
+      name: "annonces",
+      component: AnnonceView,
+    },
+    {
+      path: "/annoncescreate",
+      name: "annonces_create",
+      component: NewAnnoncesView,
     },
     {
       path: "/forgot-password",
