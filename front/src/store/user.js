@@ -54,7 +54,8 @@ export const useUserStore = defineStore("user", {
         const user = await response.json();
         if (response.ok && user) {
           this.setUser(user);
-          await router.replace("/");
+          await router.replace(`/profile/${decoded.id}`);
+          
         }
       }
       return response;

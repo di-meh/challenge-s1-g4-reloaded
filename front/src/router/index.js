@@ -38,6 +38,18 @@ const router = createRouter({
       },
     },
     {
+      path: "/profile/:id",
+      name: "profile_user",
+      component: ProfileView,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          next();
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
       path: "/:pathMatch(.*)*",
       name: "not-found",
       component: () => import("../views/NotFoundView.vue"),
