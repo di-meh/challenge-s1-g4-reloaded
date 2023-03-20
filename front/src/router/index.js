@@ -4,6 +4,8 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import UpdateUserView from "@/views/UpdateUserView.vue";
+import CreateBidView from "@/views/bid/CreateBidView.vue";
+import BidsView from "@/views/bid/BidsView.vue";
 import { useCookies } from "@vueuse/integrations/useCookies";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
@@ -76,6 +78,16 @@ const router = createRouter({
           next("/login");
         }
       },
+    },
+    {
+      path: "/bids",
+      name: "bids",
+      component: BidsView,
+    },
+    {
+      path: "/create-bid",
+      name: "create-bid",
+      component: CreateBidView,
     },
     {
       path: "/:pathMatch(.*)*",

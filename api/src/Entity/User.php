@@ -9,6 +9,8 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Controller\VerifyEmailController;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -77,6 +79,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(options: ['default' => false])]
     private ?bool $verified = false;
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Bid::class, orphanRemoval: true)]
+    private Collection $bids;
+
+    public function __construct()
+    {
+        $this->bids = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -168,6 +177,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerified(bool $verified): self
     {
         $this->verified = $verified;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Bid>
+     */
+    public function getBids(): Collection
+    {
+        return $this->bids;
+    }
+
+    public function addBid(Bid $bid): self
+    {
+        if (!$this->bids->contains($bid)) {
+            $this->bids->add($bid);
+            $bid->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBid(Bid $bid): self
+    {
+        if ($this->bids->removeElement($bid)) {
+            // set the owning side to null (unless already changed)
+            if ($bid->getCreator() === $this) {
+                $bid->setCreator(null);
+            }
+        }
 
         return $this;
     }
