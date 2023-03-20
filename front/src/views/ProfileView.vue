@@ -33,28 +33,40 @@
 </template>
 
 <script setup>
-    import { ENTRYPOINT } from "../../config/entrypoint";
-    import { ref } from "vue";
-    import { useRoute } from 'vue-router';
 
-    const route = useRoute(); 
-    const email = ref(null)
-    const name = ref(null)
-    const roles = ref(null)
-    const idUser = ref(null)
-    
+import { useUserStore } from "@/store/user";
+import { useToast } from "vue-toastification";
+import { ENTRYPOINT } from "../../config/entrypoint";
+import { ref } from "vue";
+import { useCookies } from "@vueuse/integrations/useCookies";
+const cookies = useCookies();
 
-    const getUser = async () => {
-        idUser.value = route.params.id;
-        const response = await fetch(ENTRYPOINT + `/users/${idUser.value}`, {
+console.log(cookies.get("token"))
+
+
+const userStore = useUserStore();
+const toast = useToast();
+const userId = JSON.parse(localStorage.getItem('user')).id
+console.log(userId)
+const email = ref(null)
+const name = ref(null)
+const roles = ref(null)
+const idUser = ref(null)
+
+
+const getUser = async () => {
+        const response = await fetch(`${ENTRYPOINT}/users/${userId}`, {
         method: "GET",
         headers: {
+          Authorization: `Bearer ${cookies.get("token")}`,
             "Content-Type": "application/json",
+            Accept: "application/json",
         },
         }).then(res => res.json());
         if (response) {
+            console.log(response)
             email.value = response.email;
-            name.value = response.name;
+            name.value = response.username;
             if(response.roles = "['ROLE_USER']") {
                 roles.value = "User"
             }
@@ -63,13 +75,8 @@
             throw new Error("Erreur");
         }
     };
-    getUser();
-    
-    const editUser = (id) => {
-        window.location.href = `/update-user/${id}`;
-    }
-    
 
+getUser();
     
 
 </script>
