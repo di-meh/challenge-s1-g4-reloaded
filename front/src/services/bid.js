@@ -6,12 +6,41 @@ const cookies = useCookies();
 export async function getAllBids(bids) {
   const requestOptions = {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${cookies.get("token")}`,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
   };
   const response = await fetch(ENTRYPOINT + `/bids`, requestOptions);
-  const finalRes = await response.json();
-  bids.value = finalRes["hydra:member"];
-  console.log(bids.value);
+  //console.log(response.json());
+  //const finalRes = await response.json();
+  if (response.ok) {
+    bids.value = await response.json();
+    console.log(bids.value);
+  }
+}
+
+export async function getBidsByFinished(bids, finishedBool) {
+  console.log(bids);
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${cookies.get("token")}`,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  };
+  const response = await fetch(
+    ENTRYPOINT + `/bids?${finishedBool}`,
+    requestOptions
+  );
+  //console.log(response.json());
+  //const finalRes = await response.json();
+  if (response.ok) {
+    bids.value = await response.json();
+    console.log(bids.value);
+  }
 }
 
 export async function addNewBid(values) {

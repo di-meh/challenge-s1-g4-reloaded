@@ -1,19 +1,21 @@
 <template>
     <h1>Liste des enchères</h1>
-    <!-- <div v-for="auction in auctions">
-        {{ auction.id }}
-        {{ auction.creator }}
-        {{ auction.startPrice }}
-        {{ auction.actualPrice }}
-        {{ auction.endAt }}
+    <!-- <div v-for="bid in bids">
+        {{ bid.id }}
+        {{ bid.creator }}
+        {{ bid.startPrice }}
+        {{ bid.actualPrice }}
+        {{ bid.startDate }}
+        {{ bid.endDate }}
+        {{ bid.endDate }}
     </div> -->
 </template>
 
-<script>
-// import { ref, onBeforeMount } from 'vue';
-// import jwtDecode from "jwt-decode";
+<script setup>
+import { ref, onBeforeMount } from "vue";
+import { getAllBids } from "../../services/bid";
 
-// const auctions = ref([]);
+const bids = ref([]);
 
-// onBeforeMount(() => getData());
+onBeforeMount(() => getAllBids(bids));
 </script>
