@@ -21,7 +21,7 @@ export async function getAllBids(bids) {
   }
 }
 
-export async function getBidsByFinished(bids, finishedBool) {
+export async function getBidsByFinished(finishedBool, bids) {
   let uri = `/bids`;
   if (finishedBool === true || finishedBool === "Finished") {
     uri = `/bids?finished=true`;
@@ -37,12 +37,9 @@ export async function getBidsByFinished(bids, finishedBool) {
     },
   };
   const response = await fetch(ENTRYPOINT + uri, requestOptions);
-  //console.log(response.json());
-  //const finalRes = await response.json();
+
   if (response.ok) {
     bids.value = await response.json();
-    console.log(bids.value);
-    console.log(uri);
   }
 }
 
@@ -67,6 +64,8 @@ export async function addNewBid(values) {
       finished: false,
     }),
   };
-  const response = await fetch(ENTRYPOINT + `/bids`, requestOptions);
-  return response;
+  console.log(values.startDate);
+  console.log(requestOptions);
+  // const response = await fetch(ENTRYPOINT + `/bids`, requestOptions);
+  //return response;
 }

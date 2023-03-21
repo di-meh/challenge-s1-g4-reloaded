@@ -5,8 +5,7 @@ import RegisterView from "@/views/RegisterView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import UpdateUserView from "@/views/UpdateUserView.vue";
 import CreateBidView from "@/views/bid/CreateBidView.vue";
-//import BidsView from "@/views/bid/BidsView.vue";
-import BidsViewExample from "@/views/bid/BidsViewExample.vue";
+import BidsView from "@/views/bid/BidsView.vue";
 import { useCookies } from "@vueuse/integrations/useCookies";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
@@ -72,6 +71,11 @@ const router = createRouter({
       path: "/update-user",
       name: "Update_user",
       component: UpdateUserView,
+    },
+    {
+      path: "/bid/:id",
+      name: "bid",
+      component: CreateBidView,
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem("user") && cookies.get("token")) {
           next();
@@ -83,7 +87,7 @@ const router = createRouter({
     {
       path: "/bids",
       name: "bids",
-      component: BidsViewExample,
+      component: BidsView,
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem("user") && cookies.get("token")) {
           next();

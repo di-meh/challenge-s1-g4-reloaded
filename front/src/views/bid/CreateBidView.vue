@@ -44,6 +44,8 @@
                 />
                 <FormKit
                     type="number"
+                    min="0.01"
+                    step="0.01"
                     name="startPrice"
                     validation="required"
                     label="Prix d'entrée"
