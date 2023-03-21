@@ -21,6 +21,22 @@ export async function getAllBids(bids) {
   }
 }
 
+export async function getBidById(id, bids) {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${cookies.get("token")}`,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  };
+  const response = await fetch(ENTRYPOINT + `/bids?id=` + id, requestOptions);
+  //const finalRes = await response.json();
+  if (response.ok) {
+    bids.value = await response.json();
+  }
+}
+
 export async function getBidsByFinished(finishedBool, bids) {
   let uri = `/bids`;
   if (finishedBool === true || finishedBool === "Finished") {
@@ -64,8 +80,8 @@ export async function addNewBid(values) {
       finished: false,
     }),
   };
-  console.log(values.startDate);
-  console.log(requestOptions);
-  // const response = await fetch(ENTRYPOINT + `/bids`, requestOptions);
-  //return response;
+  //console.log(values.startDate);
+  //console.log(requestOptions);
+  const response = await fetch(ENTRYPOINT + `/bids`, requestOptions);
+  return response;
 }

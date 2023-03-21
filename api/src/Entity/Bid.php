@@ -6,11 +6,13 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\BidRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+
 #[ORM\Entity(repositoryClass: BidRepository::class)]
 #[ApiResource]
-#[ApiFilter(BooleanFilter::class, properties: ['finished'])]
+
+#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'finished' => 'exact'])]
 
 class Bid
 {

@@ -6,6 +6,7 @@ import ProfileView from "@/views/ProfileView.vue";
 import UpdateUserView from "@/views/UpdateUserView.vue";
 import CreateBidView from "@/views/bid/CreateBidView.vue";
 import BidsView from "@/views/bid/BidsView.vue";
+import BidView from "@/views/bid/BidView.vue";
 import { useCookies } from "@vueuse/integrations/useCookies";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
@@ -73,9 +74,9 @@ const router = createRouter({
       component: UpdateUserView,
     },
     {
-      path: "/bid/:id",
+      path: "/bids/:id",
       name: "bid",
-      component: CreateBidView,
+      component: BidView,
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem("user") && cookies.get("token")) {
           next();
@@ -109,7 +110,7 @@ const router = createRouter({
       },
     },
     {
-      path: "/:pathMatch(.*)*",
+      path: "/:pathMatch(.*)/*",
       name: "not-found",
       component: () => import("../views/NotFoundView.vue"),
     },
