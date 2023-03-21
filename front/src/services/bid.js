@@ -22,7 +22,12 @@ export async function getAllBids(bids) {
 }
 
 export async function getBidsByFinished(bids, finishedBool) {
-  console.log(bids);
+  let uri = `/bids`;
+  if (finishedBool === true || finishedBool === "Finished") {
+    uri = `/bids?finished=true`;
+  } else if (finishedBool === false || finishedBool === "Not Finished") {
+    uri = `/bids?finished=false`;
+  }
   const requestOptions = {
     method: "GET",
     headers: {
@@ -31,15 +36,13 @@ export async function getBidsByFinished(bids, finishedBool) {
       "Content-Type": "application/json",
     },
   };
-  const response = await fetch(
-    ENTRYPOINT + `/bids?${finishedBool}`,
-    requestOptions
-  );
+  const response = await fetch(ENTRYPOINT + uri, requestOptions);
   //console.log(response.json());
   //const finalRes = await response.json();
   if (response.ok) {
     bids.value = await response.json();
     console.log(bids.value);
+    console.log(uri);
   }
 }
 

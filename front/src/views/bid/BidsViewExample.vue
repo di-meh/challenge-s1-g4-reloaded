@@ -17,6 +17,7 @@
                                     ? 'bg-white shadow'
                                     : 'text-blue-100 hover:bg-white/[0.12] hover:text-white',
                             ]"
+                            v-on:click="getBidsByFinished(bids, category)"
                         >
                             {{ category }}
                         </button>
@@ -72,11 +73,11 @@
 import { ref, onBeforeMount } from "vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 
-import { getAllBids } from "../../services/bid";
+import { getBidsByFinished } from "../../services/bid";
 
 const bids = ref([]);
 
-onBeforeMount(() => getAllBids(bids));
+onBeforeMount(() => getBidsByFinished(bids));
 
 const categories = ref({
     All: [
