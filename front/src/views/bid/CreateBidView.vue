@@ -75,7 +75,9 @@ const submit = async (values) => {
         toast.success("Enchère créée avec succès !");
         await router.push("/bids");
     } else {
-        toast.error(response.data.message);
+        toast.error(
+            "Une erreur est survenue veuillez réessayer ultérieurement"
+        );
     }
 };
 </script>

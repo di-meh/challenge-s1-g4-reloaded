@@ -82,9 +82,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Bid::class, orphanRemoval: true)]
     private Collection $bids;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Bid::class)]
+    private Collection $bidsInProgress;
+
     public function __construct()
     {
         $this->bids = new ArrayCollection();
+        $this->bidsInProgress = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -204,6 +208,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($bid->getCreator() === $this) {
                 $bid->setCreator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Bid>
+     */
+    public function getBidsInProgress(): Collection
+    {
+        return $this->bidsInProgress;
+    }
+
+    public function addBidsInProgress(Bid $bidsInProgress): self
+    {
+        if (!$this->bidsInProgress->contains($bidsInProgress)) {
+            $this->bidsInProgress->add($bidsInProgress);
+            $bidsInProgress->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBidsInProgress(Bid $bidsInProgress): self
+    {
+        if ($this->bidsInProgress->removeElement($bidsInProgress)) {
+            // set the owning side to null (unless already changed)
+            if ($bidsInProgress->getOwner() === $this) {
+                $bidsInProgress->setOwner(null);
             }
         }
 

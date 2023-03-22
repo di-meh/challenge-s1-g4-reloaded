@@ -60,7 +60,6 @@ export async function getBidsByFinished(finishedBool, bids) {
 }
 
 export async function addNewBid(values) {
-  //const formData = new FormData(event.target);
   let decoded = jwtDecode(cookies.get("token"));
   // PUT request using fetch with async/await
   const requestOptions = {
@@ -80,8 +79,31 @@ export async function addNewBid(values) {
       finished: false,
     }),
   };
+  const response = await fetch(ENTRYPOINT + `/bids`, requestOptions);
+  return response;
+}
+
+export async function updateBid() {}
+
+export async function participateBid(idBid, priceUser) {
+  let decoded = jwtDecode(cookies.get("token"));
+  console.log(idBid);
+  console.log(priceUser);
+  // PUT request using fetch with async/await
+  const requestOptions = {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${cookies.get("token")}`,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      owner: `api/users/${decoded.id}`,
+      actualPrice: parseFloat(priceUser),
+    }),
+  };
   //console.log(values.startDate);
   //console.log(requestOptions);
-  const response = await fetch(ENTRYPOINT + `/bids`, requestOptions);
+  const response = await fetch(ENTRYPOINT + `/bids/` + idBid, requestOptions);
   return response;
 }
