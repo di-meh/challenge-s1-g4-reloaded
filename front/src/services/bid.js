@@ -91,7 +91,7 @@ export async function participateBid(idBid, priceUser) {
   console.log(priceUser);
   // PUT request using fetch with async/await
   const requestOptions = {
-    method: "PATCH",
+    method: "PUT",
     headers: {
       Authorization: `Bearer ${cookies.get("token")}`,
       Accept: "application/json",
