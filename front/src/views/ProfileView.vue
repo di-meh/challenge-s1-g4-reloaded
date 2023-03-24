@@ -1,6 +1,6 @@
 <template>
 
-    <form @submit.prevent="editUser(idUser)" class="flex flex-col gap-5">
+    <form @submit.prevent="editUser()" class="flex flex-col gap-5">
     <div class="overflow-hidden bg-white shadow sm:rounded-lg">
   <div class="px-4 py-5 sm:px-6">
     <h3 class="text-lg font-medium leading-6 text-gray-900">Profile</h3>
@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-
+import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/user";
 import { useToast } from "vue-toastification";
 import { ENTRYPOINT } from "../../config/entrypoint";
@@ -49,34 +49,53 @@ const toast = useToast();
 const userId = JSON.parse(localStorage.getItem('user')).id
 console.log(userId)
 const email = ref(null)
+console.log(email._value)
 const name = ref(null)
 const roles = ref(null)
 const idUser = ref(null)
+const router = useRouter();
+console.log("all:" + email.value,name.value)
 
+// const getUser = async () => {
+//         const response = await fetch(`${ENTRYPOINT}/users/${userId}`, {
+//         method: "GET",
+//         headers: {
+//           Authorization: `Bearer ${cookies.get("token")}`,
+//             "Content-Type": "application/json",
+//             Accept: "application/json",
+//         },
+//         }).then(res => res.json());
+//         if (response) {
+//             console.log(response)
+//             email.value = response.email;
+//             name.value = response.username;
+//             if(response.roles = "['ROLE_USER']") {
+//                 roles.value = "User"
+//             }
 
-const getUser = async () => {
-        const response = await fetch(`${ENTRYPOINT}/users/${userId}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${cookies.get("token")}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-        },
-        }).then(res => res.json());
-        if (response) {
-            console.log(response)
-            email.value = response.email;
-            name.value = response.username;
-            if(response.roles = "['ROLE_USER']") {
-                roles.value = "User"
-            }
+//         } else {
+//             throw new Error("Erreur");
+//         }
+//     };
 
-        } else {
-            throw new Error("Erreur");
+    const getUser = async () => {
+      const response = await userStore.getUser();
+      if(response) {
+        email.value = response.email;
+        name.value = response.username;
+        if(response.roles = "['ROLE_USER']") {
+            roles.value = "User"
         }
-    };
+      } else {
+        throw new Error("Erreur");
+      }
+    }
 
 getUser();
+
+const editUser = async () => {
+  await router.push("/update-user");
+}
     
 
 </script>
