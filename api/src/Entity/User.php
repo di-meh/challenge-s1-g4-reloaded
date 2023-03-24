@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\VerifyEmailController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -24,6 +25,12 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             security: 'is_granted("ROLE_ADMIN") or is_granted("IS_AUTHENTICATED_FULLY") == false',
             securityMessage: 'Only admins and not logged in users can create users'
+        ),
+        new Post(
+            uriTemplate: '/users/verify_email',
+            routeName: 'api_verify_email',
+            controller: VerifyEmailController::class,
+            name: 'api_verify_email',
         ),
         new Put(
             security: 'is_granted("ROLE_ADMIN") or object == user',
@@ -60,6 +67,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     private ?string $username = null;
+
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $verified = false;
 
     public function getId(): ?int
     {
@@ -139,6 +149,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(string $username): self
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    public function isVerified(): ?bool
+    {
+        return $this->verified;
+    }
+
+    public function setVerified(bool $verified): self
+    {
+        $this->verified = $verified;
 
         return $this;
     }
