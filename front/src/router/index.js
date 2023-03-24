@@ -3,6 +3,7 @@ import HomeView from "@/views/HomeView.vue";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import ProfileView from "@/views/ProfileView.vue";
+import UpdateUserView from "@/views/UpdateUserView.vue";
 import { useCookies } from "@vueuse/integrations/useCookies";
 
 const cookies = useCookies();
@@ -29,6 +30,18 @@ const router = createRouter({
       path: "/profile",
       name: "profile",
       component: ProfileView,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          next();
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
+      path: "/update-user",
+      name: "Update_user",
+      component: UpdateUserView,
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem("user") && cookies.get("token")) {
           next();

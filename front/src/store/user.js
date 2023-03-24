@@ -3,8 +3,10 @@ import { ENTRYPOINT } from "../../config/entrypoint";
 import { useCookies } from "@vueuse/integrations/useCookies";
 import jwtDecode from "jwt-decode";
 import router from "@/router";
+import { ref } from "vue";
 
 const cookies = useCookies();
+
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -28,6 +30,37 @@ export const useUserStore = defineStore("user", {
         },
         body: JSON.stringify(values),
       });
+    },
+    async login(values) {
+      const response = await fetch(`${ENTRYPOINT}/auth`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+      const userToken = await response.json();
+      if (userToken.token) {
+        cookies.set("token", userToken.token);
+        cookies.set("refreshToken", userToken["refresh_token"]);
+        const decoded = jwtDecode(userToken.token);
+
+        const response = await fetch(`${ENTRYPOINT}/users/${decoded.id}`, {
+          headers: {
+            Authorization: `Bearer ${userToken.token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const user = await response.json();
+        if (response.ok && user) {
+          this.setUser(user);
+          await router.replace(`/`);
+          
+        }
+      }
+      return response;
     },
     async login(values) {
       const response = await fetch(`${ENTRYPOINT}/auth`, {
@@ -117,5 +150,18 @@ export const useUserStore = defineStore("user", {
       }
       return response;
     },
+
+    async getUser() {
+      const response = await fetch(`${ENTRYPOINT}/users/${this.user.id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${cookies.get("token")}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+        }).then(res => res.json());
+
+        return response;
+    }
   },
 });
