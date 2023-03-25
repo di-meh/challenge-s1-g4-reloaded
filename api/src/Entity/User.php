@@ -26,12 +26,6 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: 'is_granted("ROLE_ADMIN") or is_granted("IS_AUTHENTICATED_FULLY") == false',
             securityMessage: 'Only admins and not logged in users can create users'
         ),
-        new Post(
-            uriTemplate: '/users/verify_email',
-            routeName: 'api_verify_email',
-            controller: VerifyEmailController::class,
-            name: 'api_verify_email',
-        ),
         new Put(
             security: 'is_granted("ROLE_ADMIN") or object == user',
             securityMessage: 'Only admins and the current user can update their own user'

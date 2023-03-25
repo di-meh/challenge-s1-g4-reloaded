@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Routing\Annotation\Route;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
@@ -23,8 +24,10 @@ class VerifyEmailController extends AbstractController {
         private UserEmailService $userEmailService)
     {
     }
-
-    public function __invoke(Request $request) {
+    #[Route('/api/verify_email', name: 'api_verify_email', methods: ['GET'])]
+    public function __invoke(Request $request): JsonResponse
+    {
+        // TODO soit rediriger vers le front, soit faire en sorte que l'url générée soit la bonne
         $id = $request->get('id');
         $user = $this->userRepository->find($id);
         if (!$user) {
@@ -33,7 +36,7 @@ class VerifyEmailController extends AbstractController {
         try {
             $this->userEmailService->handleEmailConfirmation($request, $user);
         } catch (VerifyEmailExceptionInterface $e) {
-            return new JsonResponse(['message' => $e->getReason()], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['message' => $e->getReason(), "uri" => $request->getUri()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new JsonResponse(['message' => 'Email successfully verified'], Response::HTTP_OK);
     }

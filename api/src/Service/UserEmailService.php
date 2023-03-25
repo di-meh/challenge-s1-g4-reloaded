@@ -49,7 +49,9 @@ class UserEmailService
      */
     public function handleEmailConfirmation(Request $request, User $user): void
     {
-        $this->helper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());
+        $uri = $request->getUri();
+        $uri = str_replace("https", "http", $uri);
+        $this->helper->validateEmailConfirmation($uri, $user->getId(), $user->getEmail());
         $user->setVerified(true);
         $this->repository->save($user, true);
     }
