@@ -8,6 +8,7 @@
             :title="item.title"
             :description="item.description"
             :price="item.price"
+            :pictures="item.pictures"
         />
     </div>
 </template>

@@ -55,18 +55,17 @@ class MediaObject
     private ?int $id = null;
 
     #[ApiProperty(types: ['https://schema.org/contentUrl'])]
-    #[Groups(['media_object:read', 'items:write'])]
+    #[Groups(['media_object:read'])]
     public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: "media_object", fileNameProperty: "filePath")]
     #[Assert\NotNull(groups: ['media_object_create'])]
     public ?File $file = null;
 
-    #[Groups(['items:read', 'items:write'])]
+    #[Groups(['items:read'])]
     #[ORM\Column(nullable: true)] 
     public ?string $filePath = null;
 
-    #[Groups(['items:read', 'items:write'])]
     #[ORM\ManyToOne(inversedBy: 'images')]
     private ?Annonces $annonces = null;
 

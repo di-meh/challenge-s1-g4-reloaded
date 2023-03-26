@@ -9,13 +9,14 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 
 #[ORM\Entity(repositoryClass: AnnoncesRepository::class)]
-// #[ApiResource(normalizationContext: ['groups' => ['items:read']])]
 #[ApiResource(
     normalizationContext: ['groups' => ['items:read']],
     denormalizationContext: ['groups' => ['items:write']],
 )]
+
 
 class Annonces
 {
@@ -34,14 +35,14 @@ class Annonces
 
     #[ORM\Column]
     #[Groups(['items:read', 'items:write'])]
-    private ?float $price = null;
+    private ?Float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'annonces')]
     #[Groups(['items:read','items:write'])]
     private ?User $annonceOwner = null;
 
     #[Groups(['items:read','items:write'])]
-    #[ORM\OneToMany(mappedBy: 'annonces', targetEntity: MediaObject::class, cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'annonces', targetEntity: MediaObject::class, cascade: ['persist'])]
     private Collection $images;
 
     public function __construct()
