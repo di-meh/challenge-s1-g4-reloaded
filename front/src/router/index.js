@@ -35,7 +35,7 @@ const router = createRouter({
       component: AnnonceView,
     },
     {
-      path: "/annoncescreate",
+      path: "/annonces/create",
       name: "annonces_create",
       component: NewAnnoncesView,
     },
