@@ -80,7 +80,7 @@ export const useUserStore = defineStore("user", {
       });
     },
     async logout() {
-      if (!cookies.get("token")) {
+      if (!cookies.get("token") && !cookies.get("refreshToken")) {
         throw new Error("Already logged out");
       }
       this.setUser(null);
