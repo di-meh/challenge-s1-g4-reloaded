@@ -1,0 +1,94 @@
+<template>
+    <div class="bg-white">
+        <div class="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+            <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
+                <!-- Image gallery -->
+                <TabGroup as="div" class="flex flex-col-reverse">
+                    <!-- Image selector -->
+                    <div class="mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none">
+                        <TabList class="grid grid-cols-4 gap-6">
+                            <Tab v-for="image in annonce.images" :key="image.id"
+                                class="click relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4"
+                                v-slot="{ selected }">
+                                <span class="sr-only"> {{ annonce.title }} </span>
+                                <span class="absolute inset-0 overflow-hidden rounded-md">
+                                    <img :src="'/media/' + image.filePath" alt="" class="h-full w-full object-cover object-center" />
+                                </span>
+                                <span
+                                    :class="[selected ?  'ring-indigo-500' : 'ring-transparent', 'pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2']"
+                                    aria-hidden="true" />
+                            </Tab>
+                        </TabList>
+                    </div>
+
+                    <TabPanels class="aspect-w-1 aspect-h-1 w-full">
+                        <TabPanel v-for="image in annonce.images" :key="image.id">
+                            <img :src="'/media/' + image.filePath" :alt="image.alt"
+                                class="h-full w-full object-cover object-center sm:rounded-lg" />
+                        </TabPanel>
+                    </TabPanels>
+                </TabGroup>
+
+                <!-- Product info -->
+                <div class="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
+                    <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ annonce.title }}</h1>
+
+                    <div class="mt-3">
+                        <h2 class="sr-only">Product information</h2>
+                        <p class="text-3xl tracking-tight text-gray-900">{{ annonce.price }}</p>
+                    </div>
+
+
+                    <div class="mt-6">
+                        <h3 class="sr-only">Description</h3>
+
+                        <div class="space-y-6 text-base text-gray-700" v-html="annonce.description" />
+                    </div>
+
+                    <form class="mt-6">
+
+                        <div class="sm:flex-col1 mt-10 flex">
+                            <button type="submit"
+                                class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full">Add
+                                to bag</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+   
+<script setup>
+import { ref, onBeforeMount, onMounted } from 'vue'
+import {
+    Tab,
+    TabGroup,
+    TabList,
+    TabPanel,
+    TabPanels,
+} from '@headlessui/vue'
+import { ENTRYPOINT } from "../../config/entrypoint";
+import { useRoute } from "vue-router";
+const route = useRoute();
+const id = route.params.id;
+
+let annonce = ref([]);
+
+onBeforeMount(async () => {
+    const annonces = await fetch(`${ENTRYPOINT}/annonces/${id}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    const data = await annonces.json();
+    annonce.value = data;
+    // console.log(annonce.value);
+});
+
+
+
+
+
+</script>

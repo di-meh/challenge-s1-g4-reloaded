@@ -6,6 +6,7 @@ import ProfileView from "@/views/ProfileView.vue";
 import UpdateUserView from "@/views/UpdateUserView.vue";
 import AnnonceView from "@/views/AnnonceView.vue";
 import NewAnnoncesView from "@/views/NewAnnoncesView.vue";
+import ItemAnnonceView from "@/views/ItemAnnonceView.vue";
 import { useCookies } from "@vueuse/integrations/useCookies";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
@@ -40,6 +41,11 @@ const router = createRouter({
       path: "/annonces/create",
       name: "annonces_create",
       component: NewAnnoncesView,
+    },
+    {
+      path: "/annonces/:id",
+      name: "annonces_id",
+      component: ItemAnnonceView,
     },
     {
       path: "/forgot-password",
