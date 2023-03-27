@@ -12,6 +12,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -23,12 +24,20 @@ use Symfony\Component\Validator\Constraints as Assert;
             securityMessage: 'Only admins and the current user can get their own user'
         ),
         new Post(
+            denormalizationContext: ['groups' => ['post:user']],
             security: 'is_granted("ROLE_ADMIN") or is_granted("IS_AUTHENTICATED_FULLY") == false',
             securityMessage: 'Only admins and not logged in users can create users'
         ),
         new Put(
+            denormalizationContext: ['groups' => ['put:user']],
             security: 'is_granted("ROLE_ADMIN") or object == user',
             securityMessage: 'Only admins and the current user can update their own user'
+        ),
+        new Put(
+            uriTemplate: '/users/{id}/change_role',
+            denormalizationContext: ['groups' => ['put:user:change_role']],
+            securityPostDenormalize: "is_granted('ROLE_ADMIN')",
+
         ),
         new Delete(
             security: 'is_granted("ROLE_ADMIN") or object == user',
@@ -43,21 +52,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['post:user', 'put:user'])]
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
     private ?string $email = null;
 
+    #[Groups(['put:user:change_role'])]
     #[ORM\Column]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
+    #[Groups(['post:user', 'put:user'])]
     #[ORM\Column]
     #[Assert\NotBlank]
     private ?string $password = null;
 
+    #[Groups(['post:user', 'put:user'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     private ?string $username = null;

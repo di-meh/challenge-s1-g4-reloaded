@@ -5,6 +5,7 @@ namespace App\EventSubscriber;
 use ApiPlatform\Symfony\EventListener\EventPriorities;
 use App\Entity\User;
 use App\Service\UserEmailService;
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
@@ -29,7 +30,10 @@ final class UserSubscriber implements EventSubscriberInterface
         ];
     }
 
-    
+
+    /**
+     * @throws TransportExceptionInterface
+     */
     public function sendEmailConfirmation(ViewEvent $event): void
     {
         $user = $event->getControllerResult();
@@ -39,11 +43,7 @@ final class UserSubscriber implements EventSubscriberInterface
             return;
         }
 
-        try {
-            $this->userEmailService->sendEmailVerification($user);
-        } catch (TransportExceptionInterface $e) {
-            return;
-        }
+        $this->userEmailService->sendEmailVerification($user);
     }
 
 }

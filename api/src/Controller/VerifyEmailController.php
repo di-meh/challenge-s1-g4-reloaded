@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use App\Service\UserEmailService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -25,9 +26,8 @@ class VerifyEmailController extends AbstractController {
     {
     }
     #[Route('/api/verify_email', name: 'api_verify_email', methods: ['GET'])]
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): RedirectResponse|JsonResponse
     {
-        // TODO soit rediriger vers le front, soit faire en sorte que l'url générée soit la bonne
         $id = $request->get('id');
         $user = $this->userRepository->find($id);
         if (!$user) {
@@ -38,6 +38,6 @@ class VerifyEmailController extends AbstractController {
         } catch (VerifyEmailExceptionInterface $e) {
             return new JsonResponse(['message' => $e->getReason(), "uri" => $request->getUri()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return new JsonResponse(['message' => 'Email successfully verified'], Response::HTTP_OK);
+        return $this->redirect($this->getParameter('front_url') . '/login');
     }
 }
