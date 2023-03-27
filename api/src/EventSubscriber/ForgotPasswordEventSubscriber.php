@@ -9,6 +9,7 @@ use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
@@ -46,14 +47,14 @@ final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
 
     /**
      * @throws TransportExceptionInterface
-     * @throws Exception
+     * @throws NotFoundHttpException
      */
     public function onCreateToken(CreateTokenEvent $event): void
     {
         $passwordToken = $event->getPasswordToken();
         $user = $passwordToken->getUser();
         if (!$user) {
-            throw new Exception('User not found');
+            throw new NotFoundHttpException('User not found');
         }
 
         $message = (new Email())
