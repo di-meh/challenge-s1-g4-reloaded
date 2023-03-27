@@ -24,18 +24,18 @@ use Symfony\Component\Validator\Constraints as Assert;
             securityMessage: 'Only admins and the current user can get their own user'
         ),
         new Post(
-            denormalizationContext: ['groups' => ['post:user']],
+            denormalizationContext: ['groups' => ['user:post']],
             security: 'is_granted("ROLE_ADMIN") or is_granted("IS_AUTHENTICATED_FULLY") == false',
             securityMessage: 'Only admins and not logged in users can create users'
         ),
         new Put(
-            denormalizationContext: ['groups' => ['put:user']],
+            denormalizationContext: ['groups' => ['user:put']],
             security: 'is_granted("ROLE_ADMIN") or object == user',
             securityMessage: 'Only admins and the current user can update their own user'
         ),
         new Put(
             uriTemplate: '/users/{id}/change_role',
-            denormalizationContext: ['groups' => ['put:user:change_role']],
+            denormalizationContext: ['groups' => ['user:put:change_role']],
             securityPostDenormalize: "is_granted('ROLE_ADMIN')",
 
         ),
@@ -52,25 +52,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['post:user', 'put:user'])]
+    #[Groups(['user:post', 'user:put'])]
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
     private ?string $email = null;
 
-    #[Groups(['put:user:change_role'])]
+    #[Groups(['user:put:change_role'])]
     #[ORM\Column]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
-    #[Groups(['post:user', 'put:user'])]
+    #[Groups(['user:post', 'user:put'])]
     #[ORM\Column]
     #[Assert\NotBlank]
     private ?string $password = null;
 
-    #[Groups(['post:user', 'put:user'])]
+    #[Groups(['user:post', 'user:put'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     private ?string $username = null;
