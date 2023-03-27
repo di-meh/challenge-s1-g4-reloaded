@@ -5,7 +5,7 @@ import RegisterView from "@/views/RegisterView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import AnnonceView from "@/views/AnnonceView.vue";
 import NewAnnoncesView from "@/views/NewAnnoncesView.vue";
-
+import ItemAnnonceView from "@/views/ItemAnnonceView.vue";
 
 import { useCookies } from "@vueuse/integrations/useCookies";
 
@@ -38,6 +38,11 @@ const router = createRouter({
       path: "/annonces/create",
       name: "annonces_create",
       component: NewAnnoncesView,
+    },
+    {
+      path: "/annonces/:id",
+      name: "annonces_id",
+      component: ItemAnnonceView,
     },
     {
       path: "/profile",

@@ -179,6 +179,7 @@ const navigation = [
     { name: "Home", routeName: "home", href: "/" },
     { name: "Register", routeName: "register", href: "/register" },
     { name: "Login", routeName: "login", href: "/login" },
+    { name: "Annonces", routeName: "annonces", href: "/annonces" },
 ];
 
 watch(

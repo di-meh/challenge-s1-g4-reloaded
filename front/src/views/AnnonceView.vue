@@ -8,7 +8,9 @@
             :title="item.title"
             :description="item.description"
             :price="item.price"
-            :pictures="item.pictures"
+            :image="item.images[0].filePath"
+            @click = "goToAnnonce(item.id)"
+            style="cursor: pointer"
         />
     </div>
 </template>
@@ -17,6 +19,9 @@
     import AnnonceCard from "@/components/AnnonceCard.vue";
     import { ref, onBeforeMount } from "vue";
     import { ENTRYPOINT } from "../../config/entrypoint";
+    import { useRouter } from "vue-router";
+
+    const router = useRouter();
     let items = ref([]);
 
     onBeforeMount(async () => {
@@ -26,6 +31,9 @@
         console.log(items.value);
     });
 
+    const goToAnnonce = (id) => {
+        router.push(`/annonces/${id}`);
+    }
 
    
 

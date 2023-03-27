@@ -52,6 +52,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class MediaObject
 {
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
+    #[Groups(['media_object:read','items:read'])]
     private ?int $id = null;
 
     #[ApiProperty(types: ['https://schema.org/contentUrl'])]
