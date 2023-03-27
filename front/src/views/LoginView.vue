@@ -73,8 +73,10 @@ const login = async (event) => {
     const response = await userStore.login(values).catch((error) => {
         toast.error(error.response.data.message);
     });
-    if (response) {
+    if (response.ok) {
         toast.success("Login successful");
+    } else {
+        toast.error("An error occurred. Please try again.");
     }
 };
 </script>
