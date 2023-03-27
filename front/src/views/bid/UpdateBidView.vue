@@ -83,8 +83,8 @@
                 />
                 <FormKit
                     type="checkbox"
-                    label="Finished"
-                    name="terms"
+                    label="Terminée"
+                    name="finished"
                     :value="false"
                     validation-visibility="dirty"
                     :classes="{
@@ -98,15 +98,14 @@
 </template>
 
 <script setup>
-import { getBidById } from "@/services/bid";
-import { useRoute } from "vue-router";
+import { getBidById, updateBid } from "@/services/bid";
+import { useRoute, useRouter } from "vue-router";
 import { FormKit } from "@formkit/vue";
-//import { useToast } from "vue-toastification";
+import { useToast } from "vue-toastification";
 import { ref, onBeforeMount } from "vue";
 
 const route = useRoute();
-//const router = useRouter();
-//const userStore = useUserStore();
+const router = useRouter();
 const bids = ref([]);
 
 onBeforeMount(() => {
@@ -115,15 +114,15 @@ onBeforeMount(() => {
 });
 const submit = async (values) => {
     console.log(values);
-    // const toast = useToast();
-    // const response = await addNewBid(values);
-    // if (response.ok) {
-    //     toast.success("Enchère créée avec succès !");
-    //     await router.push("/bids");
-    // } else {
-    //     toast.error(
-    //         "Une erreur est survenue veuillez réessayer ultérieurement"
-    //     );
-    // }
+    const toast = useToast();
+    const response = await updateBid(bids.value[0].id, values);
+    if (response.ok) {
+        toast.success("Enchère modifiée avec succès !");
+        await router.push("/bids");
+    } else {
+        toast.error(
+            "Une erreur est survenue veuillez réessayer ultérieurement"
+        );
+    }
 };
 </script>

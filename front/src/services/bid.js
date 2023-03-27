@@ -83,7 +83,30 @@ export async function addNewBid(values) {
   return response;
 }
 
-export async function updateBid() {}
+export async function updateBid(idBid, values) {
+  //let decoded = jwtDecode(cookies.get("token"));
+  console.log(values);
+  console.log(idBid);
+  // PUT request using fetch with async/await
+  const requestOptions = {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${cookies.get("token")}`,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      title: values.title,
+      startDate: values.startDate,
+      endDate: values.endDate,
+      finished: values.finished,
+    }),
+  };
+  //console.log(values.startDate);
+  //console.log(requestOptions);
+  const response = await fetch(ENTRYPOINT + `/bids/` + idBid, requestOptions);
+  return response;
+}
 
 export async function participateBid(idBid, priceUser) {
   let decoded = jwtDecode(cookies.get("token"));
