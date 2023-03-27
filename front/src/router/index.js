@@ -4,6 +4,9 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import { useCookies } from "@vueuse/integrations/useCookies";
+import ResetPasswordView from "@/views/ResetPasswordView.vue";
+import { ENTRYPOINT } from "../../config/entrypoint";
+import ForgotPasswordView from "@/views/ForgotPasswordView.vue";
 
 const cookies = useCookies();
 
@@ -24,6 +27,30 @@ const router = createRouter({
       path: "/register",
       name: "register",
       component: RegisterView,
+    },
+    {
+      path: "/forgot-password",
+      name: "forgot-password",
+      component: ForgotPasswordView,
+    },
+    {
+      path: "/reset-password/:token",
+      name: "reset-password",
+      component: ResetPasswordView,
+      beforeEnter: async (to, from, next) => {
+        const token = to.params.token;
+        const response = await fetch(`${ENTRYPOINT}/forgot-password/${token}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        if (response.ok) {
+          next();
+        } else {
+          next("/login");
+        }
+      },
     },
     {
       path: "/profile",

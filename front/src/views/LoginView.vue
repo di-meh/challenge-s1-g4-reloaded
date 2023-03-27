@@ -40,10 +40,10 @@
 
                 <div class="flex items-center justify-between">
                     <div class="text-sm">
-                        <a
-                            href="#"
+                        <RouterLink
+                            to="/forgot-password"
                             class="font-medium text-indigo-600 hover:text-indigo-500"
-                            >Forgot your password?</a
+                            >Forgot your password?</RouterLink
                         >
                     </div>
                 </div>

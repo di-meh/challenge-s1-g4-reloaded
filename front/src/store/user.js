@@ -59,6 +59,26 @@ export const useUserStore = defineStore("user", {
       }
       return response;
     },
+    async forgotPassword(values) {
+      return await fetch(`${ENTRYPOINT}/forgot-password`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+    },
+    async resetPassword(values, token) {
+      return await fetch(`${ENTRYPOINT}/forgot-password/${token}`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+    },
     async logout() {
       if (!cookies.get("token")) {
         throw new Error("Already logged out");

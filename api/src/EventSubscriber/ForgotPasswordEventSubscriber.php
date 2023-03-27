@@ -5,11 +5,14 @@ namespace App\EventSubscriber;
 use CoopTilleuls\ForgotPasswordBundle\Event\CreateTokenEvent;
 use CoopTilleuls\ForgotPasswordBundle\Event\UpdatePasswordEvent;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -41,17 +44,22 @@ final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     * @throws Exception
+     */
     public function onCreateToken(CreateTokenEvent $event): void
     {
         $passwordToken = $event->getPasswordToken();
         $user = $passwordToken->getUser();
-
+        if (!$user) {
+            throw new Exception('User not found');
+        }
 
         $message = (new Email())
-            ->from('no-reply@example.com')
-            ->to($user->getEmail())
+            ->to(new Address($user->getEmail()))
             ->subject('Reset your password')
-            ->text('Reset your password by clicking on this link: https://' . $_ENV["SERVER_NAME"] . '/reset-password/' . $passwordToken->getToken());
+            ->text('Reset your password by clicking on this link: ' . $_ENV["FRONT_URL"] . '/reset-password/' . $passwordToken->getToken());
         $this->mailer->send($message);
     }
 
