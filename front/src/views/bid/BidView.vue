@@ -5,9 +5,12 @@
         :key="bid.id"
     >
         <div class="flex flex-col py-10 px-16 w-[500px]">
-            <h2 class="text-3xl font-bold mb-6 text-center">
+            <h2 class="text-3xl font-bold text-center">
                 {{ bid.title }}
             </h2>
+            <a :href="`/update-bid/${bid.id}`" class="text-sm mb-6 text-center"
+                >Modifier</a
+            >
             <h3 class="text-sm font-bold mb-6 text-center">
                 Temps restant : ({{
                     new Date(bid.startDate).toUTCString().substring(25, 5)
@@ -49,10 +52,9 @@
 </template>
 
 <script setup>
-import { participateBid } from "@/services/bid";
+import { participateBid, getBidById } from "@/services/bid";
 import { FormKit } from "@formkit/vue";
 import { ref, onBeforeMount } from "vue";
-import { getBidById } from "../../services/bid";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
