@@ -70,7 +70,7 @@ export async function addNewBid(values) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      creator: `api/users/${decoded.id}`,
+      creator: { id: decoded.id },
       title: values.title,
       startDate: values.startDate,
       endDate: values.endDate,
@@ -121,7 +121,7 @@ export async function participateBid(idBid, priceUser) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      owner: `api/users/${decoded.id}`,
+      owner: { id: decoded.id },
       actualPrice: parseFloat(priceUser),
     }),
   };

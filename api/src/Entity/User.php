@@ -16,6 +16,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -52,12 +53,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['bid:read', 'bid:write', 'bid:update'])]
     private ?int $id = null;
 
     #[Groups(['user:post', 'user:put'])]
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
+    #[Groups(['bid:read'])]
     private ?string $email = null;
 
     #[Groups(['user:put:change_role'])]

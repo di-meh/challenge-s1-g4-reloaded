@@ -10,7 +10,7 @@
             </h2>
             <FormKit
                 type="form"
-                submit-label="Créer une enchère"
+                submit-label="Modifier l'enchère"
                 :classes="{
                     form: 'space-y-6',
                 }"
@@ -85,7 +85,7 @@
                     type="checkbox"
                     label="Terminée"
                     name="finished"
-                    :value="false"
+                    :value="bid.finished"
                     validation-visibility="dirty"
                     :classes="{
                         wrapper: 'flex justify-between flex-row-reverse',

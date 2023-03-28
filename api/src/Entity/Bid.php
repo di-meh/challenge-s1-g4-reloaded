@@ -8,10 +8,29 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\Post;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\GetCollection;
 
 #[ORM\Entity(repositoryClass: BidRepository::class)]
-#[ApiResource]
-
+#[
+    ApiResource(
+        normalizationContext: ['groups' => ['bid:read']],
+        denormalizationContext: ['groups' => ['bid:write']],
+        operations: [
+            new GetCollection(),
+            new Get(),
+            new Put(
+                denormalizationContext: ['groups' => ['bid:update']]
+            ),
+            new Post(),
+            new Delete()
+        ]
+    )
+]
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'finished' => 'exact'])]
 
 class Bid
@@ -19,30 +38,39 @@ class Bid
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['bid:read', 'bid:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['bid:read', 'bid:write', 'bid:update'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['bid:read', 'bid:write', 'bid:update'])]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['bid:read', 'bid:write', 'bid:update'])]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column]
+    #[Groups(['bid:read', 'bid:write'])]
     private ?float $startPrice = null;
 
     #[ORM\Column]
+    #[Groups(['bid:read', 'bid:write', 'bid:update'])]
     private ?float $actualPrice = null;
 
     #[ORM\Column]
+    #[Groups(['bid:read', 'bid:write', 'bid:update'])]
     private ?bool $finished = null;
 
     #[ORM\ManyToOne(inversedBy: 'bids')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['bid:read', 'bid:write'])]
     private ?User $creator = null;
 
+    #[Groups(['bid:read', 'bid:update'])]
     #[ORM\ManyToOne(inversedBy: 'bidsInProgress')]
     private ?User $owner = null;
 

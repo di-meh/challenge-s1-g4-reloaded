@@ -38,7 +38,7 @@
                 <FormKit
                     type="number"
                     :min="`${bid.actualPrice + 5}`"
-                    step="5"
+                    step="0.01"
                     name="userPrice"
                     validation="required"
                     label="Saisir votre enchère"
