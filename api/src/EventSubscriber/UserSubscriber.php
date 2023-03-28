@@ -42,6 +42,9 @@ final class UserSubscriber implements EventSubscriberInterface
         if (!$user instanceof User || Request::METHOD_POST !== $method) {
             return;
         }
+        if ($user->isVerified() || str_contains($user->getEmail(), 'example.com')) {
+            return;
+        }
 
         $this->userEmailService->sendEmailVerification($user);
     }

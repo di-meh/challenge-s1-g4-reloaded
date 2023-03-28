@@ -185,7 +185,6 @@ watch(
     () => route.name,
     (newRouteName) => {
         routeName.value = newRouteName;
-        console.log(routeName.value);
     }
 );
 </script>

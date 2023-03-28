@@ -38,21 +38,25 @@ export const useUserStore = defineStore("user", {
         },
         body: JSON.stringify(values),
       });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error["detail"]);
+      }
       const userToken = await response.json();
       if (userToken.token) {
         cookies.set("token", userToken.token);
         cookies.set("refreshToken", userToken["refresh_token"]);
         const decoded = jwtDecode(userToken.token);
 
-        const response = await fetch(`${ENTRYPOINT}/users/${decoded.id}`, {
+        const userResponse = await fetch(`${ENTRYPOINT}/users/${decoded.id}`, {
           headers: {
             Authorization: `Bearer ${userToken.token}`,
             Accept: "application/json",
             "Content-Type": "application/json",
           },
         });
-        const user = await response.json();
-        if (response.ok && user) {
+        const user = await userResponse.json();
+        if (userResponse.ok && user) {
           this.setUser(user);
           await router.replace("/");
         }

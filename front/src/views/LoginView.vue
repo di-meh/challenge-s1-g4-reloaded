@@ -70,13 +70,15 @@ const toast = useToast();
 
 const login = async (event) => {
     const values = Object.fromEntries(new FormData(event.target));
-    const response = await userStore.login(values).catch((error) => {
-        toast.error(error.response.data.message);
-    });
-    if (response.ok) {
-        toast.success("Login successful");
-    } else {
-        toast.error("An error occurred. Please try again.");
-    }
+    await userStore
+        .login(values)
+        .then((res) => {
+            if (res.ok) {
+                toast.success("Login successful");
+            }
+        })
+        .catch((error) => {
+            toast.error(error.message);
+        });
 };
 </script>
