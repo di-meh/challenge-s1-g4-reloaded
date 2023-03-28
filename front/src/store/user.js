@@ -90,6 +90,7 @@ export const useUserStore = defineStore("user", {
       this.setUser(null);
       cookies.remove("token");
       cookies.remove("refreshToken");
+      router.push("/login");
     },
     async refreshToken() {
       const response = await fetch(`${ENTRYPOINT}/token/refresh`, {
