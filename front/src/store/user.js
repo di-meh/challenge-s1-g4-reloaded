@@ -64,7 +64,7 @@ export const useUserStore = defineStore("user", {
       return response;
     },
     async forgotPassword(values) {
-      return await fetch(`${ENTRYPOINT}/forgot-password`, {
+      return await fetch(`${ENTRYPOINT}/forgot-password/`, {
         method: "POST",
         headers: {
           Accept: "application/json",

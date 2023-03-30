@@ -45,7 +45,8 @@ const submit = async (values) => {
     if (response.ok) {
         toast.success("Un email vous a été envoyé");
     } else {
-        toast.error("Une erreur est survenue. Veuillez réessayer.");
+        const responseJson = await response.json();
+        toast.error(responseJson.detail);
     }
 };
 </script>

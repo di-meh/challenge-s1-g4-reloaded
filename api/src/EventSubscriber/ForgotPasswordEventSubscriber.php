@@ -2,10 +2,9 @@
 
 namespace App\EventSubscriber;
 
+use App\Repository\UserRepository;
 use CoopTilleuls\ForgotPasswordBundle\Event\CreateTokenEvent;
 use CoopTilleuls\ForgotPasswordBundle\Event\UpdatePasswordEvent;
-use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -20,7 +19,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private readonly TokenStorageInterface $tokenStorage, private readonly MailerInterface $mailer, private EntityManagerInterface $manager)
+    public function __construct(private readonly TokenStorageInterface $tokenStorage, private readonly MailerInterface $mailer, private UserRepository $userRepository)
     {
     }
     public static function getSubscribedEvents(): array
@@ -43,6 +42,11 @@ final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
         if (null !== $token && $token->getUser() instanceof UserInterface) {
             throw new AccessDeniedHttpException;
         }
+
+        $user = $this->userRepository->findOneBy(['email' => $event->getRequest()->get('value')]);
+        if (!$user) {
+            throw new NotFoundHttpException('User not found');
+        }
     }
 
     /**
@@ -53,14 +57,15 @@ final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
     {
         $passwordToken = $event->getPasswordToken();
         $user = $passwordToken->getUser();
-        if (!$user) {
+        $entityUser = $this->userRepository->findOneBy(['email' => $user->getEmail()]);
+        if (!$entityUser) {
             throw new NotFoundHttpException('User not found');
         }
 
         $message = (new Email())
             ->to(new Address($user->getEmail()))
-            ->subject('Reset your password')
-            ->text('Reset your password by clicking on this link: ' . $_ENV["FRONT_URL"] . '/reset-password/' . $passwordToken->getToken());
+            ->subject('Réinitialisation de votre mot de passe')
+            ->text('Réinitialisez votre mot de passe en cliquant ici: ' . $_ENV["FRONT_URL"] . '/reset-password/' . $passwordToken->getToken());
         $this->mailer->send($message);
     }
 
@@ -69,7 +74,6 @@ final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
         $passwordToken = $event->getPasswordToken();
         $user = $passwordToken->getUser();
         $user->setPassword($event->getPassword());
-        $this->manager->persist($user);
-        $this->manager->flush();
+        $this->userRepository->save($user, true);
     }
 }

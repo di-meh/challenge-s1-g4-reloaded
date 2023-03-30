@@ -16,7 +16,7 @@
                 @submit="submit"
             >
                 <FormKit
-                    type="text"
+                    type="email"
                     name="email"
                     validation="required"
                     label="E-mail"
