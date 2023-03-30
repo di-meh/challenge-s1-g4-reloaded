@@ -2,21 +2,24 @@
 
 namespace App\EventSubscriber;
 
+use App\Repository\UserRepository;
 use CoopTilleuls\ForgotPasswordBundle\Event\CreateTokenEvent;
 use CoopTilleuls\ForgotPasswordBundle\Event\UpdatePasswordEvent;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private readonly TokenStorageInterface $tokenStorage, private readonly MailerInterface $mailer, private EntityManagerInterface $manager)
+    public function __construct(private readonly TokenStorageInterface $tokenStorage, private readonly MailerInterface $mailer, private UserRepository $userRepository)
     {
     }
     public static function getSubscribedEvents(): array
@@ -39,19 +42,30 @@ final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
         if (null !== $token && $token->getUser() instanceof UserInterface) {
             throw new AccessDeniedHttpException;
         }
+
+        $user = $this->userRepository->findOneBy(['email' => $event->getRequest()->get('value')]);
+        if (!$user) {
+            throw new NotFoundHttpException('User not found');
+        }
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     * @throws NotFoundHttpException
+     */
     public function onCreateToken(CreateTokenEvent $event): void
     {
         $passwordToken = $event->getPasswordToken();
         $user = $passwordToken->getUser();
-
+        $entityUser = $this->userRepository->findOneBy(['email' => $user->getEmail()]);
+        if (!$entityUser) {
+            throw new NotFoundHttpException('User not found');
+        }
 
         $message = (new Email())
-            ->from('no-reply@example.com')
-            ->to($user->getEmail())
-            ->subject('Reset your password')
-            ->text('Reset your password by clicking on this link: https://' . $_ENV["SERVER_NAME"] . '/reset-password/' . $passwordToken->getToken());
+            ->to(new Address($user->getEmail()))
+            ->subject('Réinitialisation de votre mot de passe')
+            ->text('Réinitialisez votre mot de passe en cliquant ici: ' . $_ENV["FRONT_URL"] . '/reset-password/' . $passwordToken->getToken());
         $this->mailer->send($message);
     }
 
@@ -60,7 +74,6 @@ final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
         $passwordToken = $event->getPasswordToken();
         $user = $passwordToken->getUser();
         $user->setPassword($event->getPassword());
-        $this->manager->persist($user);
-        $this->manager->flush();
+        $this->userRepository->save($user, true);
     }
 }

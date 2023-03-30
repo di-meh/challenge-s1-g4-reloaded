@@ -387,6 +387,15 @@
             "config/packages/mailer.yaml"
         ]
     },
+    "symfony/mailgun-mailer": {
+        "version": "6.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "4.4",
+            "ref": "addcb559b32d9dbb4843826b063565e1b15a2a57"
+        }
+    },
     "symfony/maker-bundle": {
         "version": "1.0",
         "recipe": {
@@ -511,15 +520,6 @@
     "symfony/security-http": {
         "version": "v6.0.2"
     },
-    "symfony/sendinblue-mailer": {
-        "version": "6.1",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "5.2",
-            "ref": "ae1cf494ce06b9a4578a8445c610402a1676ee8d"
-        }
-    },
     "symfony/serializer": {
         "version": "v6.0.2"
     },
@@ -587,6 +587,9 @@
     },
     "symfony/yaml": {
         "version": "v6.0.2"
+    },
+    "symfonycasts/verify-email-bundle": {
+        "version": "v1.13.0"
     },
     "tilleuls/forgot-password-bundle": {
         "version": "1.4",

@@ -160,12 +160,16 @@ const route = useRoute();
 const routeName = ref(route.name);
 
 const refreshToken = async () => {
-    const response = await userStore.refreshToken().catch((err) => {
-        toast.error(err.toString);
-    });
-    if (response.ok) {
-        toast.success("Token refreshed");
-    }
+    await userStore
+        .refreshToken()
+        .then((res) => {
+            if (res.ok) {
+                toast.success("Token refreshed");
+            }
+        })
+        .catch((err) => {
+            toast.error(err.message);
+        });
 };
 
 const logout = async () => {
@@ -185,7 +189,6 @@ watch(
     () => route.name,
     (newRouteName) => {
         routeName.value = newRouteName;
-        console.log(routeName.value);
     }
 );
 </script>

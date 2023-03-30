@@ -38,34 +38,59 @@ export const useUserStore = defineStore("user", {
         },
         body: JSON.stringify(values),
       });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error["message"]);
+      }
       const userToken = await response.json();
       if (userToken.token) {
         cookies.set("token", userToken.token);
         cookies.set("refreshToken", userToken["refresh_token"]);
         const decoded = jwtDecode(userToken.token);
 
-        const response = await fetch(`${ENTRYPOINT}/users/${decoded.id}`, {
+        const userResponse = await fetch(`${ENTRYPOINT}/users/${decoded.id}`, {
           headers: {
             Authorization: `Bearer ${userToken.token}`,
             Accept: "application/json",
             "Content-Type": "application/json",
           },
         });
-        const user = await response.json();
-        if (response.ok && user) {
+        const user = await userResponse.json();
+        if (userResponse.ok && user) {
           this.setUser(user);
           await router.replace("/");
         }
       }
       return response;
     },
+    async forgotPassword(values) {
+      return await fetch(`${ENTRYPOINT}/forgot-password/`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+    },
+    async resetPassword(values, token) {
+      return await fetch(`${ENTRYPOINT}/forgot-password/${token}`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+    },
     async logout() {
-      if (!cookies.get("token")) {
+      if (!cookies.get("token") && !cookies.get("refreshToken")) {
         throw new Error("Already logged out");
       }
       this.setUser(null);
       cookies.remove("token");
       cookies.remove("refreshToken");
+      router.push("/login");
     },
     async refreshToken() {
       const response = await fetch(`${ENTRYPOINT}/token/refresh`, {
@@ -90,13 +115,15 @@ export const useUserStore = defineStore("user", {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-        }).catch((err) => {
-          console.error(err);
         });
         const user = await response.json();
         if (response.ok && user) {
           this.setUser(user);
+        } else {
+          throw new Error("User not found");
         }
+      } else {
+        throw new Error(refreshToken.message);
       }
       return response;
     },
@@ -113,6 +140,8 @@ export const useUserStore = defineStore("user", {
       const user = await response.json();
       if (response.ok && user) {
         this.setUser(user);
+      } else {
+        throw new Error(user.message);
       }
       return response;
     },
