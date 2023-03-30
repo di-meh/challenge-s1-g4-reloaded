@@ -116,11 +116,13 @@ const submit = async (values) => {
     const response = await updateBid(bids.value[0].id, values);
     if (response.ok) {
         toast.success("Enchère modifiée avec succès !");
-        await router.push("/bids");
+        //await router.push("/bids");
+        console.log(response);
     } else {
         toast.error(
             "Une erreur est survenue veuillez réessayer ultérieurement"
         );
+        await router.push("/bids");
     }
 };
 </script>

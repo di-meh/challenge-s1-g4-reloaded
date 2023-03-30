@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Post;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Metadata\Put;
@@ -21,13 +22,18 @@ use ApiPlatform\Metadata\GetCollection;
         normalizationContext: ['groups' => ['bid:read']],
         denormalizationContext: ['groups' => ['bid:write']],
         operations: [
-            new GetCollection(),
-            new Get(),
-            new Put(
-                denormalizationContext: ['groups' => ['bid:update']]
+            new GetCollection(
+                security: 'is_granted("ROLE_ADMIN") or is_granted("ROLE_ANNONCEUR")'
             ),
-            new Post(),
-            new Delete()
+            new Get(
+                security: 'is_granted("ROLE_ADMIN") or is_granted("ROLE_ANNONCEUR")'
+            ),
+            new Put(
+                denormalizationContext: ['groups' => ['bid:update']],
+                security: 'is_granted("ROLE_ADMIN") or is_granted("ROLE_ANNONCEUR")'
+            ),
+            new Post(security: 'is_granted("ROLE_ADMIN")'),
+            new Delete(security: 'is_granted("ROLE_ADMIN")')
         ]
     )
 ]
@@ -39,39 +45,48 @@ class Bid
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['bid:read', 'bid:write'])]
+    #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN')")]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['bid:read', 'bid:write', 'bid:update'])]
+    #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN')")]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['bid:read', 'bid:write', 'bid:update'])]
+    #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN')")]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['bid:read', 'bid:write', 'bid:update'])]
+    #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN')")]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column]
     #[Groups(['bid:read', 'bid:write'])]
+    #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN')")]
     private ?float $startPrice = null;
 
     #[ORM\Column]
     #[Groups(['bid:read', 'bid:write', 'bid:update'])]
+    #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('ROLE_ANNONCEUR')")]
     private ?float $actualPrice = null;
 
     #[ORM\Column]
     #[Groups(['bid:read', 'bid:write', 'bid:update'])]
+    #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN')")]
     private ?bool $finished = null;
 
     #[ORM\ManyToOne(inversedBy: 'bids')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['bid:read', 'bid:write'])]
+    #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN')")]
     private ?User $creator = null;
 
     #[Groups(['bid:read', 'bid:update'])]
     #[ORM\ManyToOne(inversedBy: 'bidsInProgress')]
+    #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('ROLE_ANNONCEUR')")]
     private ?User $owner = null;
 
     public function getId(): ?int
