@@ -5,6 +5,8 @@ namespace App\EventSubscriber;
 use ApiPlatform\Symfony\EventListener\EventPriorities;
 use App\Repository\BidRepository;
 use App\Service\UserEmailService;
+use DateTime;
+use EasyRdf\Literal\Date;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -31,12 +33,16 @@ final class BidSubscriber implements EventSubscriberInterface
     public function checkBidDate(RequestEvent $event): void
     {
         // Ici on récupères tous tes bids qui sont pas finished
-        //$bids = $this->bidRepository->findBy(['finished' => false]);
-        //dd($bids);
-        // Après tu fais un foreach sur chaque bid
-         //foreach ($bid of $bids) bref
-        // if ($bid->getDate() <= new Date())
-        // $bid->setFinished(true)
-        // endforeach puis tu persist et flush
+        $bids = $this->bidRepository->findBy(['finished' => false]);
+        // Après on parcours chaque bid
+        foreach ($bids as $bid) {
+            // Si la date de la bid est inférieur ou égale à la date du jour
+            if ($bid->getEndDate() <= new DateTime()) {
+                // Alors on set le bid à finished
+                $bid->setFinished(true);
+                // Puis on  sauvegarde la bid en base de données
+                $this->bidRepository->save($bid, true);
+            }
+        }
     }
 }
