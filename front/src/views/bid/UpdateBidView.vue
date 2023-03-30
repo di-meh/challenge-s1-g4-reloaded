@@ -110,10 +110,8 @@ const bids = ref([]);
 
 onBeforeMount(() => {
     getBidById(route.params.id, bids);
-    console.log(bids);
 });
 const submit = async (values) => {
-    console.log(values);
     const toast = useToast();
     const response = await updateBid(bids.value[0].id, values);
     if (response.ok) {
