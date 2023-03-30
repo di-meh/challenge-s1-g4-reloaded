@@ -54,7 +54,7 @@ const toast = useToast();
 const submit = async (values) => {
     const response = await userStore.resetPassword(values, token);
     if (response.ok) {
-        toast.success("Un email vous a été envoyé");
+        toast.success("Mot de passe modifié avec succès");
     } else {
         toast.error("Une erreur est survenue. Veuillez réessayer.");
     }

@@ -70,14 +70,18 @@ const router = useRouter();
 const userStore = useUserStore();
 
 const submit = async (values) => {
-    console.log(values);
     const toast = useToast();
     const response = await userStore.signUp(values);
 
     if (response.ok) {
+        toast.success(
+            "Compte créé ! Regardez vos mails pour valider votre compte."
+        );
         await router.push("/login");
     } else {
-        toast.error(response.data.message);
+        toast.error(
+            "Une erreur s'est produite. Veuillez réessayer avec des valeurs valides."
+        );
     }
 };
 </script>

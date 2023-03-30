@@ -13,6 +13,7 @@ class UserFixtures extends Fixture {
         $admin->setUsername('admin');
         $admin->setPassword('admin'); // admin
         $admin->setRoles(['ROLE_ADMIN']);
+        $admin->setVerified(true);
         $manager->persist($admin);
 
         $user = new User();
@@ -20,6 +21,7 @@ class UserFixtures extends Fixture {
         $user->setUsername('user');
         $user->setPassword('user'); // user
         $user->setRoles(['ROLE_USER']);
+        $user->setVerified(true);
         $manager->persist($user);
 
         $manager->flush();

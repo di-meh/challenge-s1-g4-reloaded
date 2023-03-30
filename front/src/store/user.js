@@ -40,7 +40,7 @@ export const useUserStore = defineStore("user", {
       });
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error["detail"]);
+        throw new Error(error["message"]);
       }
       const userToken = await response.json();
       if (userToken.token) {
@@ -115,13 +115,15 @@ export const useUserStore = defineStore("user", {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-        }).catch((err) => {
-          console.error(err);
         });
         const user = await response.json();
         if (response.ok && user) {
           this.setUser(user);
+        } else {
+          throw new Error("User not found");
         }
+      } else {
+        throw new Error(refreshToken.message);
       }
       return response;
     },
@@ -138,6 +140,8 @@ export const useUserStore = defineStore("user", {
       const user = await response.json();
       if (response.ok && user) {
         this.setUser(user);
+      } else {
+        throw new Error(user.message);
       }
       return response;
     },

@@ -5,14 +5,14 @@
         <div class="w-full max-w-md space-y-8">
             <div>
                 <h2 class="mt-6 text-center text-3xl font-bold tracking-tight">
-                    Sign in to your account
+                    Connectez-vous à votre compte
                 </h2>
             </div>
             <form class="mt-8 space-y-6" @submit.prevent="login" method="POST">
                 <div class="-space-y-px rounded-md shadow-sm">
                     <div>
                         <label for="email-address" class="sr-only"
-                            >Email address</label
+                            >Adresse mail</label
                         >
                         <input
                             id="email-address"
@@ -25,7 +25,9 @@
                         />
                     </div>
                     <div>
-                        <label for="password" class="sr-only">Password</label>
+                        <label for="password" class="sr-only"
+                            >Mot de passe</label
+                        >
                         <input
                             id="password"
                             name="password"
@@ -43,7 +45,7 @@
                         <RouterLink
                             to="/forgot-password"
                             class="font-medium text-indigo-600 hover:text-indigo-500"
-                            >Forgot your password?</RouterLink
+                            >Mot de passe oublié ?</RouterLink
                         >
                     </div>
                 </div>
@@ -53,7 +55,7 @@
                         type="submit"
                         class="group flex w-full justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
-                        Sign in
+                        Se connecter
                     </button>
                 </div>
             </form>
@@ -72,9 +74,9 @@ const login = async (event) => {
     const values = Object.fromEntries(new FormData(event.target));
     await userStore
         .login(values)
-        .then((res) => {
-            if (res.ok) {
-                toast.success("Login successful");
+        .then((response) => {
+            if (response.ok) {
+                toast.success("Connecté avec succès!");
             }
         })
         .catch((error) => {
