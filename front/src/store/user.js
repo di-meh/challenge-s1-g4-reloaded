@@ -148,16 +148,14 @@ export const useUserStore = defineStore("user", {
     },
 
     async getUser() {
-      const response = await fetch(`${ENTRYPOINT}/users/${this.user.id}`, {
+      return await fetch(`${ENTRYPOINT}/users/${this.user.id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${cookies.get("token")}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
-        }).then(res => res.json());
-
-        return response;
-    }
+      });
+    },
   },
 });
