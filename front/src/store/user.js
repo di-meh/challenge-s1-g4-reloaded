@@ -59,7 +59,6 @@ export const useUserStore = defineStore("user", {
         if (userResponse.ok && user) {
           this.setUser(user);
           await router.replace(`/`);
-
         }
       }
       return response;
