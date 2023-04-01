@@ -58,7 +58,7 @@ export const useUserStore = defineStore("user", {
         const user = await userResponse.json();
         if (userResponse.ok && user) {
           this.setUser(user);
-          await router.replace("/");
+          await router.replace(`/`);
         }
       }
       return response;
@@ -144,6 +144,17 @@ export const useUserStore = defineStore("user", {
         throw new Error(user.message);
       }
       return response;
+    },
+
+    async getUser() {
+      return await fetch(`${ENTRYPOINT}/users/${this.user.id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${cookies.get("token")}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
     },
   },
 });
