@@ -30,7 +30,7 @@ class Annonces
     #[Groups(['items:read', 'items:write'])]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 1020)]
     #[Groups(['items:read', 'items:write'])]
     private ?string $description = null;
 
