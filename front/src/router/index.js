@@ -38,6 +38,13 @@ const router = createRouter({
       path: "/annonces/create",
       name: "annonces_create",
       component: NewAnnoncesView,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          next();
+        } else {
+          next("/login");
+        }
+      },
     },
     {
       path: "/annonces/:id",
