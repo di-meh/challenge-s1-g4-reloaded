@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white">
+    <div class="text-white">
         <div class="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
             <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
                 <!-- Image gallery -->
@@ -57,24 +57,23 @@
 
                 <!-- Product info -->
                 <div class="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
-                    <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ annonce.title }}</h1>
+                    <h1 class="text-3xl font-bold tracking-tight">{{ annonce.title }}</h1>
 
                     <div class="mt-3">
                         <h2 class="sr-only">Product information</h2>
-                        <p class="text-3xl tracking-tight text-gray-900">{{ annonce.price }}</p>
+                        <p class="text-3xl tracking-tight">{{ annonce.price }} €</p>
                     </div>
 
                     <div class="mt-6">
                         <h3 class="sr-only">Description</h3>
 
-                        <div class="space-y-6 text-base text-gray-700" v-html="annonce.description" />
+                        <div class="space-y-6 text-base" v-html="annonce.description" />
                     </div>
 
                     <form class="mt-6">
                         <div class="sm:flex-col1 mt-10 flex">
                             <button type="submit"
-                                class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full">Add
-                                to bag</button>
+                                class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full">Ajouter au panier</button>
                         </div>
                     </form>
                 </div>
