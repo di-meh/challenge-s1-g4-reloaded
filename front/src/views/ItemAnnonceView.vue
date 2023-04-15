@@ -7,20 +7,46 @@
                     <!-- Image selector -->
                     <div class="mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none">
                         <TabList class="grid grid-cols-4 gap-6">
-                            <Tab v-for="image in annonce.images" :key="image.id"
+                            <Tab
                                 class="click relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4"
-                                v-slot="{ selected }">
-                                <span class="sr-only"> {{ annonce.title }} </span>
+                                v-slot="{ selected }"
+                            >
+                                <span class="sr-only">{{ annonce.title }}</span>
                                 <span class="absolute inset-0 overflow-hidden rounded-md">
-                                    <img :src="'/media/' + image.filePath" alt="" class="h-full w-full object-cover object-center" />
+                                    <img
+                                        :src="'/media/' + annonce.images[0].filePath"
+                                        alt=""
+                                        class="h-full w-full object-cover object-center"
+                                    />
                                 </span>
                                 <span
-                                    :class="[selected ?  'ring-indigo-500' : 'ring-transparent', 'pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2']"
-                                    aria-hidden="true" />
+                                    :class="[selected ? 'ring-indigo-500' : 'ring-transparent', 'pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2']"
+                                    aria-hidden="true"
+                                />
+                            </Tab>
+                            <!-- Fonctionne mais erreur console -->
+                            <Tab
+                                v-for="image in annonce.images.slice(1)"
+                                :key="image.id"
+                                class="click relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4"
+                                v-slot="{ selected }"
+                            >
+                                <span class="sr-only">{{ annonce.title }}</span>
+                                <span class="absolute inset-0 overflow-hidden rounded-md">
+                                    <img
+                                        :src="'/media/' + image.filePath"
+                                        alt=""
+                                        class="h-full w-full object-cover object-center"
+                                    />
+                                </span>
+                                <span
+                                    :class="[selected ? 'ring-indigo-500' : 'ring-transparent', 'pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2']"
+                                    aria-hidden="true"
+                                />
                             </Tab>
                         </TabList>
+                        
                     </div>
-
                     <TabPanels class="aspect-w-1 aspect-h-1 w-full">
                         <TabPanel v-for="image in annonce.images" :key="image.id">
                             <img :src="'/media/' + image.filePath" :alt="image.alt"
@@ -38,7 +64,6 @@
                         <p class="text-3xl tracking-tight text-gray-900">{{ annonce.price }}</p>
                     </div>
 
-
                     <div class="mt-6">
                         <h3 class="sr-only">Description</h3>
 
@@ -46,7 +71,6 @@
                     </div>
 
                     <form class="mt-6">
-
                         <div class="sm:flex-col1 mt-10 flex">
                             <button type="submit"
                                 class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full">Add
@@ -84,7 +108,6 @@ onBeforeMount(async () => {
     });
     const data = await annonces.json();
     annonce.value = data;
-    // console.log(annonce.value);
 });
 
 
