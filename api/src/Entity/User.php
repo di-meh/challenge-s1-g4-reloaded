@@ -58,7 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
     private ?string $email = null;
 
-    #[Groups(['user:put:change_role'])]
+    #[Groups(['user:put:change_role', 'user:post', 'user:put'])]
     #[ORM\Column]
     private array $roles = [];
 
@@ -70,13 +70,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank]
     private ?string $password = null;
 
-    #[Groups(['user:post', 'user:put'])]
+    #[Groups(['user:post', 'user:put', 'demandes:read'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     private ?string $username = null;
 
     #[ORM\Column(options: ['default' => false])]
     private ?bool $verified = false;
+
+    #[Groups(['user:post', 'user:put'])]
+    #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
+    private ?Demandes $demandes = null;
+
+    #[Groups(['user:post', 'user:put'])]
+    #[ORM\Column(nullable: true)]
+    private ?int $tel = null;
+
+    #[Groups(['user:post', 'user:put'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $adresse = null;
+
+    #[Groups(['user:post', 'user:put'])]
+    #[ORM\Column(nullable: true)]
+    private ?bool $isAnnonceur = null;
 
     public function getId(): ?int
     {
@@ -171,4 +187,63 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getDemandes(): ?Demandes
+    {
+        return $this->demandes;
+    }
+
+    public function setDemandes(?Demandes $demandes): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($demandes === null && $this->demandes !== null) {
+            $this->demandes->setOwner(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($demandes !== null && $demandes->getOwner() !== $this) {
+            $demandes->setOwner($this);
+        }
+
+        $this->demandes = $demandes;
+
+        return $this;
+    }
+
+    public function getTel(): ?int
+    {
+        return $this->tel;
+    }
+
+    public function setTel(?int $tel): self
+    {
+        $this->tel = $tel;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): self
+    {
+        $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    public function isIsAnnonceur(): ?bool
+    {
+        return $this->isAnnonceur;
+    }
+
+    public function setIsAnnonceur(?bool $isAnnonceur): self
+    {
+        $this->isAnnonceur = $isAnnonceur;
+
+        return $this;
+    }
+
 }
