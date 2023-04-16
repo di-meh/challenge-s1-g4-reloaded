@@ -4,6 +4,9 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import UpdateUserView from "@/views/UpdateUserView.vue";
+import DemandeAnnonceurView from "@/views/DemandeAnnonceurView.vue";
+import AdminDemandesView from "@/views/AdminDemandesView.vue";
+
 import { useCookies } from "@vueuse/integrations/useCookies";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
@@ -69,6 +72,30 @@ const router = createRouter({
       path: "/update-user",
       name: "Update_user",
       component: UpdateUserView,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          next();
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
+      path: "/annonceur",
+      name: "demande_annonceur",
+      component: DemandeAnnonceurView,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          next();
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
+      path: "/admin/demandes",
+      name: "demandes",
+      component: AdminDemandesView,
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem("user") && cookies.get("token")) {
           next();
