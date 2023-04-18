@@ -53,15 +53,15 @@ class Bid
     #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN')")]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['bid:read', 'bid:write', 'bid:update'])]
     #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN')")]
-    private ?\DateTimeInterface $startDate = null;
+    private ?\DateTime $startDate = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['bid:read', 'bid:write', 'bid:update'])]
     #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN')")]
-    private ?\DateTimeInterface $endDate = null;
+    private ?\DateTime $endDate = null;
 
     #[ORM\Column]
     #[Groups(['bid:read', 'bid:write'])]

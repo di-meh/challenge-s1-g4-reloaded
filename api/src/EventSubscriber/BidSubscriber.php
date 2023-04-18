@@ -19,8 +19,6 @@ final class BidSubscriber implements EventSubscriberInterface
     public function __construct(private readonly BidRepository $bidRepository)
     {
     }
-
-
     public static function getSubscribedEvents(): array
     {
         return [
@@ -29,15 +27,17 @@ final class BidSubscriber implements EventSubscriberInterface
     }
 
 
-
     public function checkBidDate(RequestEvent $event): void
     {
         // Ici on récupères tous tes bids qui sont pas finished
         $bids = $this->bidRepository->findBy(['finished' => false]);
+
         // Après on parcours chaque bid
         foreach ($bids as $bid) {
             // Si la date de la bid est inférieur ou égale à la date du jour
-            if ($bid->getEndDate() <= new DateTime()) {
+            $now = new DateTime('Europe/Paris');
+            $now = $now->format('Y-m-d H:i:s');
+            if ($bid->getEndDate()->format('Y-m-d H:i:s') <= $now) {
                 // Alors on set le bid à finished
                 $bid->setFinished(true);
                 // Puis on  sauvegarde la bid en base de données
