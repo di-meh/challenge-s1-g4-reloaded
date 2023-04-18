@@ -55,11 +55,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['bid:read', 'bid:write', 'bid:update'])]
     private ?int $id = null;
 
-    #[Groups(['user:post', 'user:put'])]
+    #[Groups(['user:post', 'user:put', 'bid:read'])]
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
-    #[Groups(['bid:read'])]
     private ?string $email = null;
 
     #[Groups(['user:put:change_role'])]
