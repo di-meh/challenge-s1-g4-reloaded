@@ -3,20 +3,22 @@
 namespace App\EventSubscriber;
 
 use ApiPlatform\Symfony\EventListener\EventPriorities;
+use App\Entity\Bid;
 use App\Repository\BidRepository;
-use App\Service\UserEmailService;
+use App\Service\BidEmailService;
 use DateTime;
 use EasyRdf\Literal\Date;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 final class BidSubscriber implements EventSubscriberInterface
 {
 
-    public function __construct(private readonly BidRepository $bidRepository)
+    public function __construct(private readonly BidRepository $bidRepository, private readonly BidEmailService $bidEmailService)
     {
     }
     public static function getSubscribedEvents(): array
@@ -45,4 +47,41 @@ final class BidSubscriber implements EventSubscriberInterface
             }
         }
     }
+    //Fonction qui permet d'envoyer un mail de confirmation et un mail pour prévenir l'ancien propriètaire quand
+    // il y a une nouvelle enchère
+
+     /**
+      * @throws TransportExceptionInterface
+      */
+     public function sendEmailBid(ViewEvent $event): void
+     {
+
+        //Je dois check si un owner existe, s'il existe je dois lui envoyer un mail pour lui dire qu'il a été remplacé
+        //Je dois envoyer un mail de confirmation à l'utilisateur qui vient d'enchérir
+        //Je dois récuperer la bid qui veut être modifier
+        $bid = $event->getControllerResult();
+        $method = $event->getRequest()->getMethod();
+
+        if(!$bid instanceof Bid || $bid->getOwner() !== null){
+            dd($bid->getOwner());
+            $this->bidEmailService->sendEmailBidOldOwner($bid->getOwner());
+            //Faut l'envoyer à l'user qui est co ce fdp
+            //$this->bidEmailService->sendEmailBidNewOwner($bid->getOwner());
+        }else if($bid->getOwner() === null){
+            $this->bidEmailService->sendEmailBidNewOwner($bid->getOwner());
+        }
+
+
+    //     $bid = $event->getControllerResult();
+    //     $method = $event->getRequest()->getMethod();
+
+    //     if (!$user instanceof User || Request::METHOD_POST !== $method) {
+    //         return;
+    //     }
+    //     if ($user->isVerified() || str_contains($user->getEmail(), 'example.com')) {
+    //         return;
+    //     }
+
+    //     $this->userEmailService->sendEmailVerification($user);
+     }
 }
