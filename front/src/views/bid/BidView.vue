@@ -74,10 +74,6 @@ const bids = ref([]);
 
 onBeforeMount(() => {
     getBidById(route.params.id, bids);
-    //const now = new Date();
-    console.log(bids);
-    //const endDate = new Date(bids.value[0].getFullYear() + 1, 0, 1);
-    //time.value = endDate - now;
 });
 const router = useRouter();
 

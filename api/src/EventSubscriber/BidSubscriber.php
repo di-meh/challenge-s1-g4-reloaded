@@ -49,7 +49,7 @@ final class BidSubscriber implements EventSubscriberInterface
                 $bid->setFinished(true);
                 // Puis on  sauvegarde la bid en base de données
                 $this->bidRepository->save($bid, true);
-                $this->bidEmailService->sendEmailBidFinishedOwner($bid->getOwner());
+                $this->bidEmailService->sendEmailBidFinishedOwner($bid->getOwner(), $bid);
             }
         }
     }
@@ -68,7 +68,7 @@ final class BidSubscriber implements EventSubscriberInterface
         $method = $event->getRequest()->getMethod();
         if($bid instanceof Bid && $bid->getOwner() !== null && Request::METHOD_PUT === $method ){
             //Envoie un mail à l'ancien propriétaire pour lui dire qu'il a été remplacé
-            $this->bidEmailService->sendEmailBidOldOwner($bid->getOwner());
+            $this->bidEmailService->sendEmailBidOldOwner($bid->getOwner(), $bid);
             //Récupérer l'utilisateur qui est connecté
             $user = $this->tokenStorage->getToken()->getUser();
             //Assigne l'utilisateur à la bid
@@ -76,7 +76,7 @@ final class BidSubscriber implements EventSubscriberInterface
             //Sauvegarde la bid en base de données
             $this->bidRepository->save($bid, true);
             //Envoie un mail de confirmation à l'utilisateur qui vient d'enchérir
-            $this->bidEmailService->sendEmailBidNewOwner($user);
+            $this->bidEmailService->sendEmailBidNewOwner($user, $bid);
         }else if($bid instanceof Bid && $bid->getOwner() === null){
             //Récupérer l'utilisateur qui est connecté
             $user = $this->tokenStorage->getToken()->getUser();
@@ -84,7 +84,7 @@ final class BidSubscriber implements EventSubscriberInterface
             $bid->setOwner($user);
             //Sauvegarde la bid en base de données
             $this->bidRepository->save($bid, true);
-            $this->bidEmailService->sendEmailBidNewOwner($bid->getOwner());
+            $this->bidEmailService->sendEmailBidNewOwner($bid->getOwner(), $bid);
         }
      }
 }

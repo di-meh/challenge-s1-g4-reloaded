@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Bid;
 use App\Entity\TokenResetPassword;
 use App\Entity\User;
 use App\Repository\UserRepository;
@@ -25,22 +26,16 @@ class BidEmailService
     /**
      * @throws TransportExceptionInterface
      */
-    public function sendEmailBidOldOwner(User $user): void
+    public function sendEmailBidOldOwner(User $user, Bid $bid): void
     {
-        $signatureComponents = $this->helper->generateSignature(
-            'api_verify_email',
-            $user->getId(),
-            $user->getEmail(),
-            ['id' => $user->getId()]
-        );
-        $link = $signatureComponents->getSignedUrl();
+
 
         $mail = (new TemplatedEmail())
             ->subject('Vous n\'êtes plus le meilleur enchérisseur')
             ->to(new Address($user->getEmail()))
             ->htmlTemplate('emails/oldOwnerBidEmail.html.twig')
             ->context([
-                'link' => $link,
+                'bid' => $bid,
             ]);
 
         $this->mailer->send($mail);
@@ -50,22 +45,15 @@ class BidEmailService
     /**
      * @throws TransportExceptionInterface
      */
-    public function sendEmailBidNewOwner(User $user): void
+    public function sendEmailBidNewOwner(User $user, Bid $bid): void
     {
-        $signatureComponents = $this->helper->generateSignature(
-            'api_verify_email',
-            $user->getId(),
-            $user->getEmail(),
-            ['id' => $user->getId()]
-        );
-        $link = $signatureComponents->getSignedUrl();
 
         $mail = (new TemplatedEmail())
             ->subject('Votre surenchère a été prise en compte')
             ->to(new Address($user->getEmail()))
             ->htmlTemplate('emails/newOwnerBidEmail.html.twig')
             ->context([
-                'link' => $link,
+                'bid' => $bid,
             ]);
 
         $this->mailer->send($mail);
@@ -75,22 +63,15 @@ class BidEmailService
     /**
      * @throws TransportExceptionInterface
      */
-    public function sendEmailBidFinishedOwner(User $user): void
+    public function sendEmailBidFinishedOwner(User $user, Bid $bid): void
     {
-        $signatureComponents = $this->helper->generateSignature(
-            'api_verify_email',
-            $user->getId(),
-            $user->getEmail(),
-            ['id' => $user->getId()]
-        );
-        $link = $signatureComponents->getSignedUrl();
 
         $mail = (new TemplatedEmail())
             ->subject('Vous avez remporté l\'enchère !')
             ->to(new Address($user->getEmail()))
             ->htmlTemplate('emails/finishedOwnerBidEmail.html.twig')
             ->context([
-                'link' => $link,
+                'bid' => $bid,
             ]);
 
         $this->mailer->send($mail);
