@@ -139,7 +139,8 @@ const navigation = [
     { name: "Home", routeName: "home", href: "/" },
     { name: "Register", routeName: "register", href: "/register" },
     { name: "Login", routeName: "login", href: "/login" },
-    { name: "annonceur", routeName: "demande_annonceur", href: "/annonceur" },
+    { name: "vendeur", routeName: "demande_vendeur", href: "/vendeur" },
+    { name: "demandes", routeName: 'demandes', href: "/admin/demandes"}
 ];
 
 

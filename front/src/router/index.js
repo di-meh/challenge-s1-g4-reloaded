@@ -4,15 +4,18 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import UpdateUserView from "@/views/UpdateUserView.vue";
-import DemandeAnnonceurView from "@/views/DemandeAnnonceurView.vue";
+import DemandeVendeurView from "@/views/DemandeVendeurView.vue";
 import AdminDemandesView from "@/views/AdminDemandesView.vue";
 
 import { useCookies } from "@vueuse/integrations/useCookies";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
 import ForgotPasswordView from "@/views/ForgotPasswordView.vue";
+import jwtDecode from "jwt-decode";
+import { useToast } from "vue-toastification";
 
 const cookies = useCookies();
+const toast = useToast();
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -81,12 +84,18 @@ const router = createRouter({
       },
     },
     {
-      path: "/annonceur",
-      name: "demande_annonceur",
-      component: DemandeAnnonceurView,
+      path: "/vendeur",
+      name: "demande_vendeur",
+      component: DemandeVendeurView,
       beforeEnter: (to, from, next) => {
+        const token = cookies.get("token");
         if (localStorage.getItem("user") && cookies.get("token")) {
-          next();
+          const decodedToken = jwtDecode(token);
+          if (decodedToken.roles.includes("ROLE_VENDEUR")) {
+            toast.error("Vous êtes déjà vendeur");
+          } else {
+            next();
+          }
         } else {
           next("/login");
         }
@@ -97,8 +106,15 @@ const router = createRouter({
       name: "demandes",
       component: AdminDemandesView,
       beforeEnter: (to, from, next) => {
+        const token = cookies.get("token");
         if (localStorage.getItem("user") && cookies.get("token")) {
-          next();
+          const decodedToken = jwtDecode(token);
+          if (decodedToken.roles.includes("ROLE_ADMIN")) {          
+            next();
+          } else {
+            toast.error("Vous devez être administrateur pour accéder à cette page");
+            next('/login');
+          }
         } else {
           next("/login");
         }

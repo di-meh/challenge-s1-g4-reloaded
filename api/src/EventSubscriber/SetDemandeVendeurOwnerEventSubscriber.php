@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-final class SetDemandeOwnerEventSubscriber implements EventSubscriberInterface
+final class SetDemandeVendeurOwnerEventSubscriber implements EventSubscriberInterface
 {
     public function __construct(private readonly EntityManagerInterface $entityManager, private readonly TokenStorageInterface $tokenStorage)
     {
