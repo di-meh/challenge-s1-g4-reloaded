@@ -15,6 +15,9 @@
                 :message="demande.message"
                 :tel="demande.tel"
                 :state="demande.state"
+                :type="demande.type"
+                :entrepriseLink="demande.entrepriseLink"
+                :entrepriseName="demande.entrepriseName"
             />
         </ul>
     </div>

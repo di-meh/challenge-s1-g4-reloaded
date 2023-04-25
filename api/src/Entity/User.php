@@ -45,6 +45,11 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => ['user:patch:update_vendeur']],
             security: 'is_granted("ROLE_ADMIN")'
         ),
+        new Patch(
+            uriTemplate: '/users/{id}/update_annonceur',
+            denormalizationContext: ['groups' => ['user:patch:update_annonceur']],
+            security: 'is_granted("ROLE_ADMIN")'
+        ),
         new Delete(
             security: 'is_granted("ROLE_ADMIN") or object == user',
             securityMessage: 'Only admins and the current user can delete their own user'
@@ -64,7 +69,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
     private ?string $email = null;
 
-    #[Groups(['user:put:change_role', 'user:post', 'user:put', 'user:patch:update_vendeur'])]
+    #[Groups(['user:put:change_role', 'user:post', 'user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
     #[ORM\Column]
     private array $roles = [];
 
@@ -88,13 +93,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private ?Demandes $demandes = null;
 
-    #[Groups(['user:post', 'user:put', 'user:patch:update_vendeur'])]
+    #[Groups(['user:post', 'user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
     #[ORM\Column(nullable: true)]
     private ?string $tel = null;
 
-    #[Groups(['user:post', 'user:put', 'user:patch:update_vendeur'])]
+    #[Groups(['user:post', 'user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $adresse = null;
+
+    #[Groups(['user:post', 'user:put', 'user:patch:update_annonceur'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $entrepriseName = null;
+
+    #[Groups(['user:post', 'user:put', 'user:patch:update_annonceur'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $entrepriseLink = null;
 
     public function getId(): ?int
     {
@@ -232,6 +245,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAdresse(?string $adresse): self
     {
         $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    public function getEntrepriseName(): ?string
+    {
+        return $this->entrepriseName;
+    }
+
+    public function setEntrepriseName(?string $entrepriseName): self
+    {
+        $this->entrepriseName = $entrepriseName;
+
+        return $this;
+    }
+
+    public function getEntrepriseLink(): ?string
+    {
+        return $this->entrepriseLink;
+    }
+
+    public function setEntrepriseLink(?string $entrepriseLink): self
+    {
+        $this->entrepriseLink = $entrepriseLink;
 
         return $this;
     }

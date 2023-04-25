@@ -84,7 +84,8 @@ const demandeVendeur = async (data) => {
             adresse: data.adresse,
             tel: data.tel,
             message: data.message,
-            state: 'En attente'
+            state: 'En attente',
+            type: 'Vendeur',
         }),
     });
 

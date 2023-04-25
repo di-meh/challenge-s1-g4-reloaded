@@ -20,7 +20,7 @@ class Demandes
     private ?int $id = null;
 
     #[Groups(['demandes:read'])]
-    #[ORM\OneToOne(inversedBy: 'demandes')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'demandes')]
     private ?User $owner = null;
 
     #[Groups(['demandes:read', 'demandes:write'])]
@@ -38,6 +38,18 @@ class Demandes
     #[Groups(['demandes:read', 'demandes:write'])]
     #[ORM\Column(length: 255)]
     private ?string $adresse = null;
+
+    #[Groups(['demandes:read', 'demandes:write'])]
+    #[ORM\Column(length: 255)]
+    private ?string $type = null;
+
+    #[Groups(['demandes:read', 'demandes:write'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $entrepriseName = null;
+
+    #[Groups(['demandes:read', 'demandes:write'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $entrepriseLink = null;
 
     public function getId(): ?int
     {
@@ -100,6 +112,42 @@ class Demandes
     public function setAdresse(string $adresse): self
     {
         $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getEntrepriseName(): ?string
+    {
+        return $this->entrepriseName;
+    }
+
+    public function setEntrepriseName(?string $entrepriseName): self
+    {
+        $this->entrepriseName = $entrepriseName;
+
+        return $this;
+    }
+
+    public function getEntrepriseLink(): ?string
+    {
+        return $this->entrepriseLink;
+    }
+
+    public function setEntrepriseLink(?string $entrepriseLink): self
+    {
+        $this->entrepriseLink = $entrepriseLink;
 
         return $this;
     }
