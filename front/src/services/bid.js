@@ -109,7 +109,7 @@ export async function updateBid(idBid, values) {
 }
 
 export async function participateBid(idBid, priceUser) {
-  let decoded = jwtDecode(cookies.get("token"));
+  //let decoded = jwtDecode(cookies.get("token"));
   console.log(idBid);
   console.log(priceUser);
   // PUT request using fetch with async/await
@@ -121,7 +121,7 @@ export async function participateBid(idBid, priceUser) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      owner: { id: decoded.id },
+      //owner: { id: decoded.id },
       actualPrice: parseFloat(priceUser),
     }),
   };

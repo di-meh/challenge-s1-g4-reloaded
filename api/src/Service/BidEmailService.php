@@ -38,7 +38,7 @@ class BidEmailService
         $mail = (new TemplatedEmail())
             ->subject('Vous n\'êtes plus le meilleur enchérisseur')
             ->to(new Address($user->getEmail()))
-            ->htmlTemplate('emails/verifyEmail.html.twig')
+            ->htmlTemplate('emails/oldOwnerBidEmail.html.twig')
             ->context([
                 'link' => $link,
             ]);
@@ -61,9 +61,34 @@ class BidEmailService
         $link = $signatureComponents->getSignedUrl();
 
         $mail = (new TemplatedEmail())
-            ->subject('Vous n\'êtes plus le meilleur enchérisseur')
+            ->subject('Votre surenchère a été prise en compte')
             ->to(new Address($user->getEmail()))
-            ->htmlTemplate('emails/verifyEmail.html.twig')
+            ->htmlTemplate('emails/newOwnerBidEmail.html.twig')
+            ->context([
+                'link' => $link,
+            ]);
+
+        $this->mailer->send($mail);
+    }
+
+    //Fonction pour le mail envoyé quand l'enchère est terminer
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function sendEmailBidFinishedOwner(User $user): void
+    {
+        $signatureComponents = $this->helper->generateSignature(
+            'api_verify_email',
+            $user->getId(),
+            $user->getEmail(),
+            ['id' => $user->getId()]
+        );
+        $link = $signatureComponents->getSignedUrl();
+
+        $mail = (new TemplatedEmail())
+            ->subject('Vous avez remporté l\'enchère !')
+            ->to(new Address($user->getEmail()))
+            ->htmlTemplate('emails/finishedOwnerBidEmail.html.twig')
             ->context([
                 'link' => $link,
             ]);

@@ -9,22 +9,27 @@ use App\Service\BidEmailService;
 use DateTime;
 use EasyRdf\Literal\Date;
 use Exception;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class BidSubscriber implements EventSubscriberInterface
 {
 
-    public function __construct(private readonly BidRepository $bidRepository, private readonly BidEmailService $bidEmailService)
+    public function __construct(private readonly TokenStorageInterface $tokenStorage, private readonly BidRepository $bidRepository, private readonly BidEmailService $bidEmailService)
     {
     }
     public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => 'checkBidDate',
+            KernelEvents::VIEW => [
+                ['sendEmailBid', EventPriorities::POST_WRITE],
+            ],
         ];
     }
 
@@ -44,6 +49,7 @@ final class BidSubscriber implements EventSubscriberInterface
                 $bid->setFinished(true);
                 // Puis on  sauvegarde la bid en base de données
                 $this->bidRepository->save($bid, true);
+                $this->bidEmailService->sendEmailBidFinishedOwner($bid->getOwner());
             }
         }
     }
@@ -55,33 +61,30 @@ final class BidSubscriber implements EventSubscriberInterface
       */
      public function sendEmailBid(ViewEvent $event): void
      {
-
         //Je dois check si un owner existe, s'il existe je dois lui envoyer un mail pour lui dire qu'il a été remplacé
         //Je dois envoyer un mail de confirmation à l'utilisateur qui vient d'enchérir
         //Je dois récuperer la bid qui veut être modifier
         $bid = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
-
-        if(!$bid instanceof Bid || $bid->getOwner() !== null){
-            dd($bid->getOwner());
+        if($bid instanceof Bid && $bid->getOwner() !== null && Request::METHOD_PUT === $method ){
+            //Envoie un mail à l'ancien propriétaire pour lui dire qu'il a été remplacé
             $this->bidEmailService->sendEmailBidOldOwner($bid->getOwner());
-            //Faut l'envoyer à l'user qui est co ce fdp
-            //$this->bidEmailService->sendEmailBidNewOwner($bid->getOwner());
-        }else if($bid->getOwner() === null){
+            //Récupérer l'utilisateur qui est connecté
+            $user = $this->tokenStorage->getToken()->getUser();
+            //Assigne l'utilisateur à la bid
+            $bid->setOwner($user);
+            //Sauvegarde la bid en base de données
+            $this->bidRepository->save($bid, true);
+            //Envoie un mail de confirmation à l'utilisateur qui vient d'enchérir
+            $this->bidEmailService->sendEmailBidNewOwner($user);
+        }else if($bid instanceof Bid && $bid->getOwner() === null){
+            //Récupérer l'utilisateur qui est connecté
+            $user = $this->tokenStorage->getToken()->getUser();
+            //Assigne l'utilisateur à la bid
+            $bid->setOwner($user);
+            //Sauvegarde la bid en base de données
+            $this->bidRepository->save($bid, true);
             $this->bidEmailService->sendEmailBidNewOwner($bid->getOwner());
         }
-
-
-    //     $bid = $event->getControllerResult();
-    //     $method = $event->getRequest()->getMethod();
-
-    //     if (!$user instanceof User || Request::METHOD_POST !== $method) {
-    //         return;
-    //     }
-    //     if ($user->isVerified() || str_contains($user->getEmail(), 'example.com')) {
-    //         return;
-    //     }
-
-    //     $this->userEmailService->sendEmailVerification($user);
      }
 }
