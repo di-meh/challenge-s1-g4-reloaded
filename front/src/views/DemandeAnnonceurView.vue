@@ -65,7 +65,6 @@ let token = cookies.get("token");
 const router = useRouter();
 
 const demandeAnnonceur = async (data) => {
-    console.log(data);
     let demandeAnnonceur = await fetch(ENTRYPOINT + "/demandes", {
         method: "POST",
         headers: {

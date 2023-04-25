@@ -22,9 +22,9 @@ const accept = async () => {
     const userId = props.userId.split("/").pop();
     const demandeId = props.demandeId.split("/").pop();
     const response = await fetch(`${ENTRYPOINT}/users/${userId}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/merge-patch+json",
             Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({

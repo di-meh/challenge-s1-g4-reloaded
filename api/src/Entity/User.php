@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
 use App\Controller\VerifyEmailController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -39,6 +40,11 @@ use Symfony\Component\Validator\Constraints as Assert;
             securityPostDenormalize: "is_granted('ROLE_ADMIN')",
 
         ),
+        new Patch(
+            denormalizationContext: ['groups' => ['user:patch']],
+            security: 'is_granted("ROLE_ADMIN") or object == user',
+            securityMessage: 'Only admins and the current user can update their own user'
+        ),
         new Delete(
             security: 'is_granted("ROLE_ADMIN") or object == user',
             securityMessage: 'Only admins and the current user can delete their own user'
@@ -58,7 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
     private ?string $email = null;
 
-    #[Groups(['user:put:change_role', 'user:post', 'user:put'])]
+    #[Groups(['user:put:change_role', 'user:post', 'user:put', 'user:patch'])]
     #[ORM\Column]
     private array $roles = [];
 
@@ -82,15 +88,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private ?Demandes $demandes = null;
 
-    #[Groups(['user:post', 'user:put'])]
+    #[Groups(['user:post', 'user:put', 'user:patch'])]
     #[ORM\Column(nullable: true)]
     private ?int $tel = null;
 
-    #[Groups(['user:post', 'user:put'])]
+    #[Groups(['user:post', 'user:put', 'user:patch'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $adresse = null;
 
-    #[Groups(['user:post', 'user:put'])]
+    #[Groups(['user:post', 'user:put', 'user:patch'])]
     #[ORM\Column(nullable: true)]
     private ?bool $isAnnonceur = null;
 
