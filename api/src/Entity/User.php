@@ -90,8 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $verified = false;
 
     #[Groups(['user:post', 'user:put'])]
-    // #[ORM\ManyToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
-    #[ORM\ManyToOne(targetEntity: Demandes::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Demandes::class, cascade: ['persist', 'remove'])]
     private ?Demandes $demandes = null;
 
     #[Groups(['user:post', 'user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
