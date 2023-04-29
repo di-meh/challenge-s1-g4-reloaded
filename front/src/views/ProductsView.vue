@@ -7,30 +7,11 @@
         </header>
 
         <div v-if="page === 'cart'">
-        <h1>Your Cart</h1>
-            <div class="products">  
-                <div v-for="product in cart" :key="product.name">
-                        {{ product.name }}
-                        <img :src=product.image alt="">
-                        <div>{{ product.cost }}</div>
-                        <button v-on:click="removeItemFromCart(product)">Remove item</button>
-                </div>
-            </div>
+            <ShowCartView :cart="cart" v-on:removeItemFromCart="removeItemFromCart"/>
         </div>
 
-
-
         <div v-if="page === 'products'">
-            <h1>Products</h1>
-                <div class="products">  
-                    <div v-for="product in products" :key="product.name">
-                        
-                            {{ product.name }}
-                            <img :src=product.image alt="">
-                            <div>{{ product.cost }}</div>
-                            <button v-on:click="addItemToCart(product)">Add to Cart</button>
-                    </div>
-                </div>
+            <ShowProductsView v-on:addItemToCart="addItemToCart"/>
         </div>
 
     </div>
@@ -38,25 +19,15 @@
 
 
 <script>
-    export default {
+import ShowCartView from './ShowCartView.vue';
+import ShowProductsView from './ShowProductsView.vue'
+export default {
         name: "App",
         data: () => {
             
             return {
-                page: "cart",
+                page: "products",
                 cart: [],
-                products: [
-                    {
-                        name: "Hair Brush",
-                        cost: '0.99$',
-                        image: 'https://images.squarespace-cdn.com/content/v1/5a71fb0701002704ea478d9c/1641501731807-720ETHDN1VF1J5PMSJ6X/Screen+Shot+2022-01-06+at+1.40.26+PM.png?format=1500w'
-                    },
-                    {
-                        name: "Cookies",
-                        cost: '1.99$',
-                        image: 'https://assets.afcdn.com/recipe/20190529/93153_w1024h1024c1cx2220cy1728.jpg'
-                    }
-                ]
             }
         },
         methods: {
@@ -67,20 +38,23 @@
                 this.page = page;
             },
             removeItemFromCart(product) {
-                this.cart.splice(this.cart.indexOf(product))
+                this.cart.splice(this.cart.indexOf(product),1)
             }
         },
-        components: {}
+        components: { ShowProductsView, ShowCartView }
     }
 </script>
 
-<style scoped>
+<style>
     .products {
         width:300px;
         display: flex;
         justify-content: space-between;
     }
 
+</style>
+
+<style scoped>
     header {
         height: 60px;
         background-color: #eee;
