@@ -1,9 +1,15 @@
 <template>
     <div>
         <header>
-            <button v-on:click="navigateTo('products')">View Products</button>
-                {{cart.length}} in cart
-           <button v-on:click="navigateTo('cart')">View Cart</button>
+           <!-- <button v-on:click="navigateTo('products')" class="h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">
+                <span class="mr-2" >Voir les produits</span>
+            </button>
+           -->
+
+           <button v-on:click="navigateTo('cart')" class="h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">
+                <span class="mr-2" >Voir votre Panier</span>
+                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">{{cart.length}}</span>
+            </button>
         </header>
 
         <div v-if="page === 'cart'">
@@ -15,6 +21,9 @@
         </div>
 
     </div>
+
+
+
 </template>
 
 
@@ -60,14 +69,12 @@ export default {
         background-color: #eee;
         box-shadow: 2px 2px 5px #999;
         text-align: right;
-        padding-top: 20px;
+        padding-top: 10px;
     }
     body {
         margin: 0;
     }
 
-    header button {
-        background-color: green;
-    }
+
 
 </style>
