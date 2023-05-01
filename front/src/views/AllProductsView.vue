@@ -3,6 +3,7 @@
         <ProductDescriptionDrawer 
         :product="product"
         :active="active.product_drawer"
+        v-on:close-product-drawer="closeProductDrawer()"
         />
 
 
@@ -41,6 +42,9 @@
                 this.active.product_drawer = true
                 console.log(this.product)
                 console.log(this.active.product_drawer)
+            },
+            closeProductDrawer() {
+                this.active.product_drawer = false
             }
         }
     }
