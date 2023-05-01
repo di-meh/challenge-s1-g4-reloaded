@@ -5,6 +5,7 @@ import RegisterView from "@/views/RegisterView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import { useCookies } from "@vueuse/integrations/useCookies";
 import ProductsView from "@/views/ProductsView.vue";
+import AllProductsView from "@/views/AllProductsView.vue";
 
 const cookies = useCookies();
 
@@ -30,6 +31,11 @@ const router = createRouter({
       path: "/products",
       name: "products",
       component: ProductsView,
+    },
+    {
+      path: "/all-products",
+      name: "all-products",
+      component: AllProductsView,
     },
     {
       path: "/profile",
