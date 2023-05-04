@@ -6,7 +6,8 @@ import ProfileView from "@/views/ProfileView.vue";
 import { useCookies } from "@vueuse/integrations/useCookies";
 import ProductsView from "@/views/ProductsView.vue";
 import AllProductsView from "@/views/AllProductsView.vue";
-
+import Products from "@/views/Products.vue";
+import Cart from "@/views/Cart.vue";
 const cookies = useCookies();
 
 const router = createRouter({
@@ -36,6 +37,16 @@ const router = createRouter({
       path: "/all-products",
       name: "all-products",
       component: AllProductsView,
+    },
+    {
+      path: "/products-list",
+      name: "products-list",
+      component: Products,
+    },
+    {
+      path: "/cart",
+      name: "cart",
+      component: Cart,
     },
     {
       path: "/profile",

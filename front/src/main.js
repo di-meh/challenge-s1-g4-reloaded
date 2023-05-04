@@ -22,3 +22,6 @@ app.use(plugin, defaultConfig);
 app.use(Toast, toastOptions);
 
 app.mount("#app");
+
+
+

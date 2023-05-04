@@ -36,6 +36,7 @@
                 "
                 >{{ item.name }}</RouterLink
               >
+
             </div>
           </div>
         </div>
@@ -43,6 +44,8 @@
           class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
         >
           <!-- Profile dropdown -->
+          <RouterLink 
+          to="/cart">Panier ({{ data.countCartItems }})</RouterLink>
           <Menu as="div" class="relative ml-3">
             <div>
               <MenuButton
@@ -50,8 +53,11 @@
               >
                 <span class="sr-only">Open user menu</span>
                 <UserIcon class="h-6 w-6 text-gray-400" />
+                
               </MenuButton>
+              
             </div>
+            
             <transition
               enter-active-class="transition ease-out duration-100"
               enter-from-class="transform opacity-0 scale-95"
@@ -135,11 +141,15 @@ import {
   MenuItem,
   MenuItems,
 } from "@headlessui/vue";
-import { Bars3Icon, XMarkIcon, UserIcon } from "@heroicons/vue/24/outline";
+import { Bars3Icon, XMarkIcon, UserIcon, ShoppingCartIcon } from "@heroicons/vue/24/outline";
 import { useUserStore } from "@/store/user";
 import { useToast } from "vue-toastification";
 import { useRoute } from "vue-router";
 import { ref, watch } from "vue";
+import { useShoppingStore } from "../Stores";
+const data = useShoppingStore();
+
+
 
 const userStore = useUserStore();
 const toast = useToast();
@@ -167,7 +177,12 @@ const navigation = [
   { name: "Home", routeName: "home", href: "/" },
   { name: "Register", routeName: "register", href: "/register" },
   { name: "Login", routeName: "login", href: "/login" },
+  
 ];
+
+const cart = [
+{ name: "Cart", routeName: "cart", href: "/cart" }
+]
 
 watch(
   () => route.name,
