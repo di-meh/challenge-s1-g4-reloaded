@@ -57,7 +57,6 @@ import router from "@/router";
 const userStore = useUserStore();
 
 const submit = async (values) => {
-    console.log(values);
     const toast = useToast();
     const response = await userStore.updateUser(values);
 

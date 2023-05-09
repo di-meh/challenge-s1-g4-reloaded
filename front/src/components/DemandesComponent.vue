@@ -19,6 +19,7 @@ const props = defineProps({
     type: String,
     entrepriseLink: String,
     entrepriseName: String,
+    deleteDemande: Function
 });
 
 const acceptVendeur = async () => {
@@ -46,6 +47,7 @@ const acceptVendeur = async () => {
         });
         if (deleteDemande.ok) {
             toast.success("Demande acceptée");
+            props.deleteDemande(demandeId);
         } else {
             toast.error("Erreur");
         }
@@ -81,6 +83,7 @@ const acceptAnnonceur = async () => {
         });
         if (deleteDemande.ok) {
             toast.success("Demande acceptée");
+            props.deleteDemande(demandeId);
         } else {
             toast.error("Erreur");
         }
@@ -100,6 +103,7 @@ const decline = async () => {
     });
     if (deleteDemande.ok) {
         toast.success("Demande refusée");
+        props.deleteDemande(demandeId);
     } else {
         toast.error("Erreur");
     }

@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Patch;
 use App\Controller\VerifyEmailController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -90,8 +91,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $verified = false;
 
     #[Groups(['user:post', 'user:put'])]
-    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Demandes::class, cascade: ['persist', 'remove'])]
-    private ?Demandes $demandes = null;
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Demandes::class)]
+    private PersistentCollection $demandes;
 
     #[Groups(['user:post', 'user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
     #[ORM\Column(nullable: true)]
@@ -203,7 +204,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getDemandes(): ?Demandes
+    public function getDemandes(): PersistentCollection
     {
         return $this->demandes;
     }

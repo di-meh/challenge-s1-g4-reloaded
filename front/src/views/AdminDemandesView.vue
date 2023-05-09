@@ -6,8 +6,8 @@
         </div>
         <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <DemandesComponent
-                v-for="demande in demandes"
-                :key="demande.id"
+                v-for="demande in demandes.value"
+                :key="demande['@id']"
                 :username="demande.owner.username"
                 :userId="demande.owner['@id']"
                 :demandeId="demande['@id']"
@@ -18,6 +18,7 @@
                 :type="demande.type"
                 :entrepriseLink="demande.entrepriseLink"
                 :entrepriseName="demande.entrepriseName"
+                :deleteDemande="deleteDemande"
             />
         </ul>
     </div>
@@ -25,13 +26,17 @@
 
 <script setup>
 
-import { ref, onBeforeMount } from "vue";
+import { ref, reactive, onBeforeMount } from "vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
 import { useRouter } from "vue-router";
 import DemandesComponent from "../components/DemandesComponent.vue";
 
 const router = useRouter();
-let demandes = ref([]);
+const demandes = reactive([]);
+
+function deleteDemande(id) {
+    demandes.value = demandes.value.filter((demande) => demande['@id'].split("/").pop() !== id);
+}
 
 onBeforeMount(async () => {
     const response = await fetch(`${ENTRYPOINT}/demandes`);
