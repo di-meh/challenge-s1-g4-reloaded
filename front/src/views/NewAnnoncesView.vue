@@ -68,9 +68,13 @@ async function addNewAnnonce(event) {
             price: parseFloat(event.price),
             images: mediaResponse.map((item) => item["@id"])
         }),
-    }).then((response) => response.json()).then(() => {
-        toast.success("Annonce ajoutée avec succès");
-        router.push("/annonces");
     });
+
+    if (annonceResponse.status === 201) {
+        toast.success("Annonce créée avec succès");
+        router.push({ name: "Home" });
+    } else {
+        toast.error("Une erreur est survenue");
+    }
 }
 </script>

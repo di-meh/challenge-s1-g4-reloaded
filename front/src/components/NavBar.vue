@@ -184,6 +184,7 @@ const navigation = [
     { name: "Register", routeName: "register", href: "/register" },
     { name: "Login", routeName: "login", href: "/login" },
     { name: "Annonces", routeName: "annonces", href: "/annonces" },
+    { name: "Créer une annonce", routeName: "annonce_create", href: "/annonces/create"}
 ];
 
 watch(

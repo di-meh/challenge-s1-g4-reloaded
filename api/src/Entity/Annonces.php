@@ -9,15 +9,33 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put; 
 use ApiPlatform\Metadata\GetCollection;
+
 
 #[ORM\Entity(repositoryClass: AnnoncesRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['items:read']],
     denormalizationContext: ['groups' => ['items:write']],
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(
+            security: "is_granted('ROLE_VENDEUR')",
+            securityMessage: 'Only sellers can create articles'
+        ),
+        new Put(
+            security: "is_granted('ROLE_ADMIN') or object.annonceOwner == user",
+            securityMessage: 'Only admins and the current user can update their own articles'
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN') or object.annonceOwner == user",
+            securityMessage: 'Only admins and the current user can delete their own articles'
+        )
+    ]
 )]
-
-
 class Annonces
 {
     #[ORM\Id]
