@@ -30,6 +30,10 @@ import { ref, reactive, onBeforeMount } from "vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
 import { useRouter } from "vue-router";
 import DemandesComponent from "../components/DemandesComponent.vue";
+import { useCookies } from "@vueuse/integrations/useCookies";
+
+const cookies = useCookies();
+let token = cookies.get("token");
 
 const router = useRouter();
 const demandes = reactive([]);
@@ -39,7 +43,13 @@ function deleteDemande(id) {
 }
 
 onBeforeMount(async () => {
-    const response = await fetch(`${ENTRYPOINT}/demandes`);
+    const response = await fetch(`${ENTRYPOINT}/demandes`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+        },
+    });
     const data = await response.json();
     demandes.value = data["hydra:member"];
 });

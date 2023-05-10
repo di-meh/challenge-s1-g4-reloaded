@@ -5,12 +5,40 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\DemandesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: DemandesRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['demandes:read']],
     denormalizationContext: ['groups' => ['demandes:write']],
+    operations: [
+        new Get(
+            security: 'is_granted("ROLE_ADMIN")',
+            securityMessage: 'Only admins can get the demandes'
+        ),
+        new GetCollection(
+            security: 'is_granted("ROLE_ADMIN")',
+            securityMessage: 'Only admins can get the demandes'
+        ),
+        new Post(
+            security: 'is_granted("ROLE_USER") || is_granted("ROLE_VENDEUR") || is_granted("ROLE_ANNONCEUR")',
+            securityMessage: 'Only authenticated users can create the demandes'
+        ),
+        new Put(
+            security: 'is_granted("ROLE_ADMIN")',
+            securityMessage: 'Only admins can update the demandes'
+        ),
+        new Delete(
+            security: 'is_granted("ROLE_ADMIN")',
+            securityMessage: 'Only admins and the current user can delete the demandes'
+        )
+    ]
 )]
 class Demandes
 {
