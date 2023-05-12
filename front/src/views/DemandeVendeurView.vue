@@ -15,38 +15,37 @@
                 }"
                 @submit="demandeVendeur"
             >
-            <FormKit
-                type="text"
-                name="adresse"
-                validation="required"
-                label="Adresse"
-                placeholder="Adresse"
-                :classes="{
-                    input: 'mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                }"
-            />
-            <FormKit
-                type="number"
-                name="tel"
-                label="Téléphone"
-                placeholder="Téléphone"
-                validation="required|isPhoneNumber"
-                :validation-rules="{ isPhoneNumber }"
-                :classes="{
-                    input: 'mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                }"
-            />
-            <FormKit
-                type="textarea"
-                name="message"
-                validation="required"
-                label="Message"
-                placeholder="Message"
-                :classes="{
-                    input: 'mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                }"
-            />
-             
+                <FormKit
+                    type="text"
+                    name="adresse"
+                    validation="required"
+                    label="Adresse"
+                    placeholder="Adresse"
+                    :classes="{
+                        input: 'mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                    }"
+                />
+                <FormKit
+                    type="number"
+                    name="tel"
+                    label="Téléphone"
+                    placeholder="Téléphone"
+                    validation="required|isPhoneNumber"
+                    :validation-rules="{ isPhoneNumber }"
+                    :classes="{
+                        input: 'mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                    }"
+                />
+                <FormKit
+                    type="textarea"
+                    name="message"
+                    validation="required"
+                    label="Message"
+                    placeholder="Message"
+                    :classes="{
+                        input: 'mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                    }"
+                />
             </FormKit>
         </div>
     </div>
@@ -65,13 +64,11 @@ let token = cookies.get("token");
 const router = useRouter();
 
 function isPhoneNumber(node) {
-  const frPhoneNumber = /^0[1-78]([-. ]?[0-9]{2}){4}$/;
-    const value = node.value
-    
-    return frPhoneNumber.test(value);
-        
-}
+    const frPhoneNumber = /^0[1-78]([-. ]?[0-9]{2}){4}$/;
+    const value = node.value;
 
+    return frPhoneNumber.test(value);
+}
 
 const demandeVendeur = async (data) => {
     let demandeVendeur = await fetch(ENTRYPOINT + "/demandes", {
@@ -84,17 +81,17 @@ const demandeVendeur = async (data) => {
             adresse: data.adresse,
             tel: data.tel,
             message: data.message,
-            state: 'En attente',
-            type: 'Vendeur',
+            state: "En attente",
+            type: "Vendeur",
         }),
     });
 
     if (demandeVendeur.status === 201) {
         toast.success("Demande envoyée avec succès");
         router.push("/");
-    } else  {
+    } else {
         toast.error("Vous avez déjà envoyé une demande");
         router.push("/");
-    } 
-}
+    }
+};
 </script>

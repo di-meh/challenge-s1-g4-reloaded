@@ -128,11 +128,13 @@ const router = createRouter({
         const token = cookies.get("token");
         if (localStorage.getItem("user") && cookies.get("token")) {
           const decodedToken = jwtDecode(token);
-          if (decodedToken.roles.includes("ROLE_ADMIN")) {          
+          if (decodedToken.roles.includes("ROLE_ADMIN")) {
             next();
           } else {
-            toast.error("Vous devez être administrateur pour accéder à cette page");
-            next('/login');
+            toast.error(
+              "Vous devez être administrateur pour accéder à cette page"
+            );
+            next("/login");
           }
         } else {
           next("/login");
