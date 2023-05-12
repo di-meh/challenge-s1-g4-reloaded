@@ -128,7 +128,8 @@ export const useUserStore = defineStore("user", {
       return response;
     },
     async updateUser(values) {
-      const response = await fetch(`${ENTRYPOINT}/users/${this.user.id}`, {
+      const tokenUser = jwtDecode(cookies.get("token"));
+      const response = await fetch(`${ENTRYPOINT}/users/${tokenUser.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${cookies.get("token")}`,
@@ -147,7 +148,8 @@ export const useUserStore = defineStore("user", {
     },
 
     async getUser() {
-      return await fetch(`${ENTRYPOINT}/users/${this.user.id}`, {
+      const tokenUser = jwtDecode(cookies.get("token"));
+      return await fetch(`${ENTRYPOINT}/users/${tokenUser.id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${cookies.get("token")}`,
