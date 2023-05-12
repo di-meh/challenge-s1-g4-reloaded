@@ -12,9 +12,7 @@
                 >Modifier</a
             >
             <h3 class="text-sm font-bold mb-6 text-center">
-                <span v-if="new Date(bid.endDate) <= new Date()">
-                    Enchère terminée</span
-                >
+                <span v-if="bid.finished"> Enchère terminée</span>
                 <span v-else>
                     <vue-countdown
                         :time="new Date(bid.endDate) - new Date()"
@@ -32,7 +30,7 @@
             <h3 class="text-sm font-bold mb-6 text-center">
                 Prix actuel : {{ bid.actualPrice }} €
             </h3>
-            <span v-if="new Date(bid.endDate) >= new Date()">
+            <span v-if="bid.finished === false">
                 <FormKit
                     type="form"
                     submit-label="Enchérir"

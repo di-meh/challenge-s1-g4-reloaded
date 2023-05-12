@@ -30,7 +30,12 @@ use ApiPlatform\Metadata\GetCollection;
             ),
             new Put(
                 denormalizationContext: ['groups' => ['bid:update']],
-                security: 'is_granted("ROLE_ADMIN") or is_granted("ROLE_ANNONCEUR")'
+                security: 'is_granted("ROLE_ADMIN")'
+            ),
+            new Put(
+                denormalizationContext: ['groups' => ['bid:annonceur']],
+                security: 'is_granted("ROLE_ANNONCEUR")',
+                uriTemplate: '/bids/{id}/annonceur',
             ),
             new Post(security: 'is_granted("ROLE_ADMIN")'),
             new Delete(security: 'is_granted("ROLE_ADMIN")')
@@ -69,7 +74,7 @@ class Bid
     private ?float $startPrice = null;
 
     #[ORM\Column]
-    #[Groups(['bid:read', 'bid:write', 'bid:update'])]
+    #[Groups(['bid:read', 'bid:write', 'bid:update', 'bid:annonceur'])]
     #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('ROLE_ANNONCEUR')")]
     private ?float $actualPrice = null;
 
@@ -84,7 +89,7 @@ class Bid
     #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN')")]
     private ?User $creator = null;
 
-    #[Groups(['bid:read', 'bid:update'])]
+    #[Groups(['bid:read', 'bid:update', 'bid:annonceur'])]
     #[ORM\ManyToOne(inversedBy: 'bidsInProgress')]
     #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('ROLE_ANNONCEUR')")]
     private ?User $owner = null;
