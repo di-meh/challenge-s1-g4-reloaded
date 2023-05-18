@@ -14,10 +14,11 @@ class PasswordSubscriber implements EventSubscriberInterface
 
     public function getSubscribedEvents(): array
     {
-        return [
-            Events::prePersist,
-            Events::preUpdate,
-        ];
+//        return [
+//            Events::prePersist,
+//            Events::preUpdate,
+//        ];
+        return [];
     }
 
     public function prePersist(LifecycleEventArgs $args): void

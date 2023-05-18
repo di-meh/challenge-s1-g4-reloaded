@@ -1,10 +1,12 @@
 <template>
     <div class="flex w-full justify-center items-center h-full">
         <div class="flex flex-col py-10 px-16 w-[500px]">
-            <h2 class="text-3xl font-bold mb-6 text-center">Sign Up</h2>
+            <h2 class="text-3xl font-bold mb-6 text-center">
+                Mettre à jour vos informations
+            </h2>
             <FormKit
                 type="form"
-                submit-label="S'inscrire"
+                submit-label="Mettre à jour"
                 :classes="{
                     form: 'space-y-6',
                 }"
@@ -15,15 +17,6 @@
                 }"
                 @submit="submit"
             >
-                <FormKit
-                    type="email"
-                    name="email"
-                    validation="required"
-                    label="E-mail"
-                    :classes="{
-                        input: 'mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                    }"
-                />
                 <FormKit
                     type="text"
                     name="username"
@@ -37,7 +30,7 @@
                     type="password"
                     name="password"
                     validation="required"
-                    label="Password"
+                    label="Mot de passe"
                     :classes="{
                         input: 'mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
                     }"
@@ -46,42 +39,31 @@
                     type="password"
                     name="password_confirm"
                     validation="required|confirm"
-                    label="Confirm Password"
+                    label="Confirmation du mot de passe"
                     :classes="{
                         input: 'mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
                     }"
                 />
             </FormKit>
-            <span class="mt-3">
-                Already have an account?
-                <router-link to="/login" class="underline">Login</router-link>
-            </span>
         </div>
     </div>
 </template>
 
 <script setup>
-import { useUserStore } from "@/store/user";
-import { useRouter } from "vue-router";
 import { FormKit } from "@formkit/vue";
 import { useToast } from "vue-toastification";
-
-const router = useRouter();
+import { useUserStore } from "@/store/user";
+import router from "@/router";
 const userStore = useUserStore();
 
 const submit = async (values) => {
     const toast = useToast();
-    const response = await userStore.signUp(values);
+    const response = await userStore.updateUser(values);
 
     if (response.ok) {
-        toast.success(
-            "Compte créé ! Regardez vos mails pour valider votre compte."
-        );
-        await router.push("/login");
+        await router.push("/profile");
     } else {
-        toast.error(
-            "Une erreur s'est produite. Veuillez réessayer avec des valeurs valides."
-        );
+        toast.error("Une erreur est survenue, veuillez réessayer");
     }
 };
 </script>
