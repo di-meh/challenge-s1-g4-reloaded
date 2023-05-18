@@ -64,6 +64,15 @@ class Annonces
     #[ORM\OneToMany(mappedBy: 'annonces', targetEntity: MediaObject::class, cascade: ['persist'])]
     private Collection $images;
 
+    #[ORM\Column(length: 255, nullable:true)]
+    private ?string $stripe_price_id = null;
+
+    #[ORM\Column(length: 255, nullable:true)]
+    private ?string $stripe_product_id = null;
+
+    #[ORM\ManyToOne(inversedBy: 'bought')]
+    private ?User $buyer = null;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
@@ -148,6 +157,42 @@ class Annonces
                 $image->setAnnonces(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStripePriceId(): ?string
+    {
+        return $this->stripe_price_id;
+    }
+
+    public function setStripePriceId(string $stripe_price_id): self
+    {
+        $this->stripe_price_id = $stripe_price_id;
+
+        return $this;
+    }
+
+    public function getStripeProductId(): ?string
+    {
+        return $this->stripe_product_id;
+    }
+
+    public function setStripeProductId(string $stripe_product_id): self
+    {
+        $this->stripe_product_id = $stripe_product_id;
+
+        return $this;
+    }
+
+    public function getBuyer(): ?User
+    {
+        return $this->buyer;
+    }
+
+    public function setBuyer(?User $buyer): self
+    {
+        $this->buyer = $buyer;
 
         return $this;
     }

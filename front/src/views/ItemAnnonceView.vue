@@ -109,7 +109,7 @@
                                 type="submit"
                                 class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
                             >
-                                Ajouter au panier
+                                Acheter
                             </button>
                         </div>
                     </form>

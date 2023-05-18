@@ -117,10 +117,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'annonceOwner', targetEntity: Annonces::class)]
     private Collection $annonces;
 
+    #[ORM\OneToMany(mappedBy: 'buyer', targetEntity: Annonces::class)]
+    private Collection $bought;
+
     public function __construct()
     {
         $this->annonces = new ArrayCollection();
         $this->demandes = new ArrayCollection();
+        $this->bought = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -303,6 +307,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($annonce->getAnnonceOwner() === $this) {
                 $annonce->setAnnonceOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Annonces>
+     */
+    public function getBought(): Collection
+    {
+        return $this->bought;
+    }
+
+    public function addBought(Annonces $bought): self
+    {
+        if (!$this->bought->contains($bought)) {
+            $this->bought->add($bought);
+            $bought->setBuyer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBought(Annonces $bought): self
+    {
+        if ($this->bought->removeElement($bought)) {
+            // set the owning side to null (unless already changed)
+            if ($bought->getBuyer() === $this) {
+                $bought->setBuyer(null);
             }
         }
 
