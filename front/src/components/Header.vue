@@ -7,8 +7,8 @@
 
             <a href="">
                 <router-link class="nav-link" aria-current="page" to="/cart"
-                            >Cart</router-link
-                        >
+                    >Cart</router-link
+                >
             </a>
             <button
                 class="navbar-toggler"

@@ -55,6 +55,9 @@
                     class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
                 >
                     <!-- Profile dropdown -->
+                    <RouterLink to="/cart"
+                        >Panier ({{ data.countCartItems }})</RouterLink
+                    >
                     <Menu as="div" class="relative ml-3">
                         <div>
                             <MenuButton
@@ -147,15 +150,13 @@ import {
     MenuItem,
     MenuItems,
 } from "@headlessui/vue";
-import { Bars3Icon, XMarkIcon, UserIcon, ShoppingCartIcon } from "@heroicons/vue/24/outline";
+import { Bars3Icon, XMarkIcon, UserIcon } from "@heroicons/vue/24/outline";
 import { useUserStore } from "@/store/user";
 import { useToast } from "vue-toastification";
 import { useRoute } from "vue-router";
 import { ref, watch } from "vue";
 import { useShoppingStore } from "../Stores";
 const data = useShoppingStore();
-
-
 
 const userStore = useUserStore();
 const toast = useToast();
@@ -188,12 +189,12 @@ const navigation = [
     { name: "Register", routeName: "register", href: "/register" },
     { name: "Login", routeName: "login", href: "/login" },
     { name: "Annonces", routeName: "annonces", href: "/annonces" },
-    { name: "Créer une annonce", routeName: "annonce_create", href: "/annonces/create"}
+    {
+        name: "Créer une annonce",
+        routeName: "annonce_create",
+        href: "/annonces/create",
+    },
 ];
-
-const cart = [
-{ name: "Cart", routeName: "cart", href: "/cart" }
-]
 
 watch(
     () => route.name,

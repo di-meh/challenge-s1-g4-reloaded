@@ -1,13 +1,9 @@
 <template>
-    
-    <ProductList />  
-  </template>
-  
-  <script setup>
-  import ProductList from "./ProductList.vue"; 
+    <ProductList />
+</template>
 
-  </script>
-  
-  <style>
-  
-  </style>
+<script setup>
+import ProductList from "./ProductList.vue";
+</script>
+
+<style></style>
