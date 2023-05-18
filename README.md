@@ -20,3 +20,10 @@ docker compose build --pull --no-cache
 docker compose up -d
 ```
 
+Creer un fichier .env dans la racine:
+
+```bash
+STRIPE_PUBLIC_KEY="Votre_CLE_Public_Stripe"
+STRIPE_SECRET_KEY="Votre_CLE_Privee_Stripe"
+```
+

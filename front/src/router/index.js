@@ -12,6 +12,8 @@ import NewAnnoncesView from "@/views/NewAnnoncesView.vue";
 import ItemAnnonceView from "@/views/ItemAnnonceView.vue";
 import { useCookies } from "@vueuse/integrations/useCookies";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
+import PaymentSuccess from "@/views/PaymentSuccessView.vue";
+import PaymentCancel from "@/views/PaymentCancelView.vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
 import ForgotPasswordView from "@/views/ForgotPasswordView.vue";
 import jwtDecode from "jwt-decode";
@@ -171,6 +173,16 @@ const router = createRouter({
           next("/login");
         }
       },
+    },
+    {
+      path: "/payment/success",
+      name: "payment_success",
+      component: PaymentSuccess,
+    },
+    {
+      path: "/payment/cancel",
+      name: "payment_cancel",
+      component: PaymentCancel,
     },
     {
       path: "/:pathMatch(.*)*",

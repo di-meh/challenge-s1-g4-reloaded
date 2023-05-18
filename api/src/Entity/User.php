@@ -117,6 +117,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'annonceOwner', targetEntity: Annonces::class)]
     private Collection $annonces;
 
+    // #[Groups(['items:read','items:write'])]
     #[ORM\OneToMany(mappedBy: 'buyer', targetEntity: Annonces::class)]
     private Collection $bought;
 

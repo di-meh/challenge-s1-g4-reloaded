@@ -103,16 +103,15 @@
                         />
                     </div>
 
-                    <form class="mt-6">
+                    <div class="mt-6">
                         <div class="sm:flex-col1 mt-10 flex">
-                            <button
-                                type="submit"
+                            <button @click="buy"
                                 class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
                             >
                                 Acheter
                             </button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -120,14 +119,27 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, reactive } from "vue";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
 import { useRoute } from "vue-router";
+import { loadStripe } from "@stripe/stripe-js";
+
 const route = useRoute();
 const id = route.params.id;
-
 let annonce = ref([]);
+const publishableKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+const stripePromise = loadStripe(publishableKey);
+const successURL = `https://${window.location.host}/payment/success`;
+const cancelURL = `https://${window.location.host}/payment/cancel`;
+
+const lineItems = reactive([
+    {
+        price: "",
+        quantity: 1,
+    },
+]);
+
 
 onBeforeMount(async () => {
     const annonces = await fetch(`${ENTRYPOINT}/annonces/${id}`, {
@@ -138,5 +150,21 @@ onBeforeMount(async () => {
     });
     const data = await annonces.json();
     annonce.value = data;
+    lineItems[0].price = data["stripe_price_id"];
 });
+
+
+
+const buy = async () => {
+    const stripe = await stripePromise;
+    const { error } = await stripe.redirectToCheckout({
+        mode: "payment",
+        lineItems: lineItems,
+        successUrl: successURL,
+        cancelUrl: cancelURL,
+    });
+    if (error) {
+        console.error("Error:", error);
+    }
+}
 </script>

@@ -64,12 +64,15 @@ class Annonces
     #[ORM\OneToMany(mappedBy: 'annonces', targetEntity: MediaObject::class, cascade: ['persist'])]
     private Collection $images;
 
+    #[Groups(['items:read','items:write'])]
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $stripe_price_id = null;
 
+    #[Groups(['items:read','items:write'])]
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $stripe_product_id = null;
 
+    // #[Groups(['items:read','items:write'])]
     #[ORM\ManyToOne(inversedBy: 'bought')]
     private ?User $buyer = null;
 
