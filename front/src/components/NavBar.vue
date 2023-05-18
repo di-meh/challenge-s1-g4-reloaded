@@ -1,7 +1,7 @@
 <template>
     <Disclosure
         as="nav"
-        class="bg-gray-800 w-full fixed border-b-gray-600 border-b"
+        class="bg-gray-800 w-full fixed border-b-gray-600 border-b z-[1000]"
         v-slot="{ open }"
     >
         <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -185,6 +185,8 @@ const navigation = [
     { name: "vendeur", routeName: "demande_vendeur", href: "/vendeur" },
     { name: "annonceur", routeName: "demande_annonceur", href: "/annonceur" },
     { name: "demandes", routeName: "demandes", href: "/admin/demandes" },
+    { name: "Annonces", routeName: "annonces", href: "/annonces" },
+    { name: "Créer une annonce", routeName: "annonce_create", href: "/annonces/create"}
 ];
 
 watch(

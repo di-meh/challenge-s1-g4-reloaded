@@ -7,7 +7,9 @@ import UpdateUserView from "@/views/UpdateUserView.vue";
 import DemandeVendeurView from "@/views/DemandeVendeurView.vue";
 import DemandeAnnonceurView from "@/views/DemandeAnnonceurView.vue";
 import AdminDemandesView from "@/views/AdminDemandesView.vue";
-
+import AnnonceView from "@/views/AnnonceView.vue";
+import NewAnnoncesView from "@/views/NewAnnoncesView.vue";
+import ItemAnnonceView from "@/views/ItemAnnonceView.vue";
 import { useCookies } from "@vueuse/integrations/useCookies";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
@@ -35,6 +37,35 @@ const router = createRouter({
       path: "/register",
       name: "register",
       component: RegisterView,
+    },
+    {
+      path: "/annonces",
+      name: "annonces",
+      component: AnnonceView,
+    },
+    {
+      path: "/annonces/create",
+      name: "annonces_create",
+      component: NewAnnoncesView,
+      beforeEnter: (to, from, next) => {
+        const token = cookies.get("token");
+        const decodedToken = jwtDecode(token);
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          if (!decodedToken.roles.includes("ROLE_VENDEUR")) {
+            toast.error("Vous devez être vendeur");
+            next("/");
+          } else {
+            next();
+          }
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
+      path: "/annonces/:id",
+      name: "annonces_id",
+      component: ItemAnnonceView,
     },
     {
       path: "/forgot-password",
