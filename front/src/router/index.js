@@ -4,18 +4,22 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import UpdateUserView from "@/views/UpdateUserView.vue";
+import DemandeVendeurView from "@/views/DemandeVendeurView.vue";
+import DemandeAnnonceurView from "@/views/DemandeAnnonceurView.vue";
+import AdminDemandesView from "@/views/AdminDemandesView.vue";
 import AnnonceView from "@/views/AnnonceView.vue";
 import NewAnnoncesView from "@/views/NewAnnoncesView.vue";
 import ItemAnnonceView from "@/views/ItemAnnonceView.vue";
-import jwtDecode from "jwt-decode";
-import { useToast } from "vue-toastification";
 import { useCookies } from "@vueuse/integrations/useCookies";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
 import ForgotPasswordView from "@/views/ForgotPasswordView.vue";
+import jwtDecode from "jwt-decode";
+import { useToast } from "vue-toastification";
 
 const cookies = useCookies();
 const toast = useToast();
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -106,6 +110,63 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem("user") && cookies.get("token")) {
           next();
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
+      path: "/vendeur",
+      name: "demande_vendeur",
+      component: DemandeVendeurView,
+      beforeEnter: (to, from, next) => {
+        const token = cookies.get("token");
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          const decodedToken = jwtDecode(token);
+          if (decodedToken.roles.includes("ROLE_VENDEUR")) {
+            toast.error("Vous êtes déjà vendeur");
+          } else {
+            next();
+          }
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
+      path: "/annonceur",
+      name: "demande_annonceur",
+      component: DemandeAnnonceurView,
+      beforeEnter: (to, from, next) => {
+        const token = cookies.get("token");
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          const decodedToken = jwtDecode(token);
+          if (decodedToken.roles.includes("ROLE_ANNONCEUR")) {
+            toast.error("Vous êtes déjà annonceur");
+          } else {
+            next();
+          }
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
+      path: "/admin/demandes",
+      name: "demandes",
+      component: AdminDemandesView,
+      beforeEnter: (to, from, next) => {
+        const token = cookies.get("token");
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          const decodedToken = jwtDecode(token);
+          if (decodedToken.roles.includes("ROLE_ADMIN")) {
+            next();
+          } else {
+            toast.error(
+              "Vous devez être administrateur pour accéder à cette page"
+            );
+            next("/login");
+          }
         } else {
           next("/login");
         }

@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
 use App\Controller\VerifyEmailController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -43,6 +44,16 @@ use Symfony\Component\Validator\Constraints as Assert;
             securityPostDenormalize: "is_granted('ROLE_ADMIN')",
 
         ),
+        new Patch(
+            uriTemplate: '/users/{id}/update_vendeur',
+            denormalizationContext: ['groups' => ['user:patch:update_vendeur']],
+            security: 'is_granted("ROLE_ADMIN")'
+        ),
+        new Patch(
+            uriTemplate: '/users/{id}/update_annonceur',
+            denormalizationContext: ['groups' => ['user:patch:update_annonceur']],
+            security: 'is_granted("ROLE_ADMIN")'
+        ),
         new Delete(
             security: 'is_granted("ROLE_ADMIN") or object == user',
             securityMessage: 'Only admins and the current user can delete their own user'
@@ -62,7 +73,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
     private ?string $email = null;
 
-    #[Groups(['user:put:change_role'])]
+    #[Groups(['user:put:change_role', 'user:post', 'user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
     #[ORM\Column]
     private array $roles = [];
 
@@ -74,13 +85,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank]
     private ?string $password = null;
 
-    #[Groups(['user:post', 'user:put', 'items:read','items:write'])]
+    #[Groups(['user:post', 'user:put', 'items:read','items:write', 'demandes:read'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     private ?string $username = null;
 
     #[ORM\Column(options: ['default' => false])]
     private ?bool $verified = false;
+
+    #[Groups(['user:post', 'user:put'])]
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Demandes::class)]
+    private Collection $demandes;
+
+    #[Groups(['user:post', 'user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
+    #[ORM\Column(nullable: true)]
+    private ?string $tel = null;
+
+    #[Groups(['user:post', 'user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $adresse = null;
+
+    #[Groups(['user:post', 'user:put', 'user:patch:update_annonceur'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $entrepriseName = null;
+
+    #[Groups(['user:post', 'user:put', 'user:patch:update_annonceur'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $entrepriseLink = null;
 
     #[Groups(['items:read','items:write'])]
     #[ORM\OneToMany(mappedBy: 'annonceOwner', targetEntity: Annonces::class)]
@@ -89,6 +120,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->annonces = new ArrayCollection();
+        $this->demandes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -181,6 +213,68 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerified(bool $verified): self
     {
         $this->verified = $verified;
+
+        return $this;
+    }
+
+    public function getDemandes(): Collection
+    {
+        return $this->demandes;
+    }
+
+    public function addDemandes(Demandes $demandes): self
+    {
+        if (!$this->demandes->contains($demandes)) {
+            $this->demandes->add($demandes);
+            $demandes->setOwner($this);
+        }
+
+        return $this;
+    }
+    public function getTel(): ?string
+    {
+        return $this->tel;
+    }
+
+    public function setTel(?string $tel): self
+    {
+        $this->tel = $tel;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): self
+    {
+        $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    public function getEntrepriseName(): ?string
+    {
+        return $this->entrepriseName;
+    }
+
+    public function setEntrepriseName(?string $entrepriseName): self
+    {
+        $this->entrepriseName = $entrepriseName;
+
+        return $this;
+    }
+
+    public function getEntrepriseLink(): ?string
+    {
+        return $this->entrepriseLink;
+    }
+
+    public function setEntrepriseLink(?string $entrepriseLink): self
+    {
+        $this->entrepriseLink = $entrepriseLink;
 
         return $this;
     }

@@ -128,10 +128,9 @@
                     :aria-current="
                         routeName.value === item.routeName ? 'page' : undefined
                     "
-                    ><RouterLink :to="item.href">{{
-                        item.name
-                    }}</RouterLink></DisclosureButton
                 >
+                    <RouterLink :to="item.href">{{ item.name }}</RouterLink>
+                </DisclosureButton>
             </div>
         </DisclosurePanel>
     </Disclosure>
@@ -183,8 +182,15 @@ const navigation = [
     { name: "Home", routeName: "home", href: "/" },
     { name: "Register", routeName: "register", href: "/register" },
     { name: "Login", routeName: "login", href: "/login" },
+    { name: "vendeur", routeName: "demande_vendeur", href: "/vendeur" },
+    { name: "annonceur", routeName: "demande_annonceur", href: "/annonceur" },
+    { name: "demandes", routeName: "demandes", href: "/admin/demandes" },
     { name: "Annonces", routeName: "annonces", href: "/annonces" },
-    { name: "Créer une annonce", routeName: "annonce_create", href: "/annonces/create"}
+    {
+        name: "Créer une annonce",
+        routeName: "annonce_create",
+        href: "/annonces/create",
+    },
 ];
 
 watch(
