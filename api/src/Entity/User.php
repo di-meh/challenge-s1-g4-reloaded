@@ -13,7 +13,6 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -85,7 +84,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Assert\NotBlank]
     private ?string $password = null;
-  
+
     #[Groups(['user:post', 'user:put', 'items:read','items:write', 'demandes:read'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -96,7 +95,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(['user:post', 'user:put'])]
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Demandes::class)]
-    private PersistentCollection $demandes;
+    private Collection $demandes;
 
     #[Groups(['user:post', 'user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
     #[ORM\Column(nullable: true)]
@@ -113,7 +112,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:post', 'user:put', 'user:patch:update_annonceur'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $entrepriseLink = null;
-  
+
     #[Groups(['items:read','items:write'])]
     #[ORM\OneToMany(mappedBy: 'annonceOwner', targetEntity: Annonces::class)]
     private Collection $annonces;
@@ -121,7 +120,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->annonces = new ArrayCollection();
-        $this->demandes = new PersistentCollection();
+        $this->demandes = new ArrayCollection();
     }
 
     public function getId(): ?int
