@@ -217,28 +217,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getDemandes(): PersistentCollection
+    public function getDemandes(): Collection
     {
         return $this->demandes;
     }
 
-    public function setDemandes(?Demandes $demandes): self
+    public function addDemandes(Demandes $demandes): self
     {
-        // unset the owning side of the relation if necessary
-        if ($demandes === null && $this->demandes !== null) {
-            $this->demandes->setOwner(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($demandes !== null && $demandes->getOwner() !== $this) {
+        if (!$this->demandes->contains($demandes)) {
+            $this->demandes->add($demandes);
             $demandes->setOwner($this);
         }
 
-        $this->demandes = $demandes;
-
         return $this;
     }
-
     public function getTel(): ?string
     {
         return $this->tel;
