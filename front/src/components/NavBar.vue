@@ -186,7 +186,11 @@ const navigation = [
     { name: "annonceur", routeName: "demande_annonceur", href: "/annonceur" },
     { name: "demandes", routeName: "demandes", href: "/admin/demandes" },
     { name: "Annonces", routeName: "annonces", href: "/annonces" },
-    { name: "Créer une annonce", routeName: "annonce_create", href: "/annonces/create"}
+    {
+        name: "Créer une annonce",
+        routeName: "annonce_create",
+        href: "/annonces/create",
+    },
 ];
 
 watch(
