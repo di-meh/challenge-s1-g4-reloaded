@@ -25,5 +25,6 @@ Creer un fichier .env dans la racine:
 ```bash
 STRIPE_PUBLIC_KEY="Votre_CLE_Public_Stripe"
 STRIPE_SECRET_KEY="Votre_CLE_Privee_Stripe"
+STRIPE_WEBHOOK_SECRET="Votre_CLE_Webhook_Stripe"
 ```
 
