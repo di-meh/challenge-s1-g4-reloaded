@@ -21,8 +21,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
-    normalizationContext: ['groups' => ['items:read']],
-    denormalizationContext: ['groups' => ['items:write']],
     operations: [
         new Get(
             security: 'is_granted("ROLE_ADMIN") or object == user',
@@ -58,7 +56,9 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: 'is_granted("ROLE_ADMIN") or object == user',
             securityMessage: 'Only admins and the current user can delete their own user'
         )
-    ]
+    ],
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:write']]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -113,11 +113,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $entrepriseLink = null;
 
-    #[Groups(['items:read','items:write'])]
     #[ORM\OneToMany(mappedBy: 'annonceOwner', targetEntity: Annonces::class)]
     private Collection $annonces;
 
-    // #[Groups(['items:read','items:write'])]
+    #[Groups(['user:read','user:write'])]
     #[ORM\OneToMany(mappedBy: 'buyer', targetEntity: Annonces::class)]
     private Collection $bought;
 

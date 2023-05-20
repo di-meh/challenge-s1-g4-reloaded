@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\AnnoncesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -17,8 +19,6 @@ use ApiPlatform\Metadata\GetCollection;
 
 #[ORM\Entity(repositoryClass: AnnoncesRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['items:read']],
-    denormalizationContext: ['groups' => ['items:write']],
     operations: [
         new Get(),
         new GetCollection(),
@@ -34,8 +34,11 @@ use ApiPlatform\Metadata\GetCollection;
             security: "is_granted('ROLE_ADMIN') or object.getAnnonceOwner() == user",
             securityMessage: 'Only admins and the current user can delete their own articles'
         )
-    ]
+    ],
+    normalizationContext: ['groups' => ['items:read']],
+    denormalizationContext: ['groups' => ['items:write']]
 )]
+#[ApiFilter(ExistsFilter::class, properties: ['buyer'])]
 class Annonces
 {
     #[ORM\Id]
@@ -72,8 +75,8 @@ class Annonces
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $stripe_product_id = null;
 
-    // #[Groups(['items:read','items:write'])]
     #[ORM\ManyToOne(inversedBy: 'bought')]
+    #[Groups(['items:read','items:write'])]
     private ?User $buyer = null;
 
     public function __construct()
