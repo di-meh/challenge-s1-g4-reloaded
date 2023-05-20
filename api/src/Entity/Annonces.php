@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\AnnoncesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -11,14 +13,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put; 
+use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\GetCollection;
 
 
 #[ORM\Entity(repositoryClass: AnnoncesRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['items:read']],
-    denormalizationContext: ['groups' => ['items:write']],
     operations: [
         new Get(),
         new GetCollection(),
@@ -27,15 +27,18 @@ use ApiPlatform\Metadata\GetCollection;
             securityMessage: 'Only sellers can create articles'
         ),
         new Put(
-            security: "is_granted('ROLE_ADMIN') or object.annonceOwner == user",
+            security: "is_granted('ROLE_ADMIN') or object.getAnnonceOwner() == user",
             securityMessage: 'Only admins and the current user can update their own articles'
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN') or object.annonceOwner == user",
+            security: "is_granted('ROLE_ADMIN') or object.getAnnonceOwner() == user",
             securityMessage: 'Only admins and the current user can delete their own articles'
         )
-    ]
+    ],
+    normalizationContext: ['groups' => ['items:read']],
+    denormalizationContext: ['groups' => ['items:write']]
 )]
+#[ApiFilter(ExistsFilter::class, properties: ['buyer'])]
 class Annonces
 {
     #[ORM\Id]
@@ -63,6 +66,18 @@ class Annonces
     #[Groups(['items:read','items:write'])]
     #[ORM\OneToMany(mappedBy: 'annonces', targetEntity: MediaObject::class, cascade: ['persist'])]
     private Collection $images;
+
+    #[Groups(['items:read','items:write'])]
+    #[ORM\Column(length: 255, nullable:true)]
+    private ?string $stripe_price_id = null;
+
+    #[Groups(['items:read','items:write'])]
+    #[ORM\Column(length: 255, nullable:true)]
+    private ?string $stripe_product_id = null;
+
+    #[ORM\ManyToOne(inversedBy: 'bought')]
+    #[Groups(['items:read','items:write'])]
+    private ?User $buyer = null;
 
     public function __construct()
     {
@@ -148,6 +163,42 @@ class Annonces
                 $image->setAnnonces(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStripePriceId(): ?string
+    {
+        return $this->stripe_price_id;
+    }
+
+    public function setStripePriceId(string $stripe_price_id): self
+    {
+        $this->stripe_price_id = $stripe_price_id;
+
+        return $this;
+    }
+
+    public function getStripeProductId(): ?string
+    {
+        return $this->stripe_product_id;
+    }
+
+    public function setStripeProductId(string $stripe_product_id): self
+    {
+        $this->stripe_product_id = $stripe_product_id;
+
+        return $this;
+    }
+
+    public function getBuyer(): ?User
+    {
+        return $this->buyer;
+    }
+
+    public function setBuyer(?User $buyer): self
+    {
+        $this->buyer = $buyer;
 
         return $this;
     }

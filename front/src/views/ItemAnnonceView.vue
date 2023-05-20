@@ -103,16 +103,24 @@
                         />
                     </div>
 
-                    <form class="mt-6">
+                    <div class="mt-6">
                         <div class="sm:flex-col1 mt-10 flex">
                             <button
-                                type="submit"
+                                v-if="isOwner"
+                                @click="deleteAnnonce"
+                                class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-red-600 py-3 px-8 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
+                            >
+                                Supprimer votre annonce
+                            </button>
+                            <button
+                                v-else
+                                @click="buy"
                                 class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
                             >
-                                Ajouter au panier
+                                Acheter
                             </button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -120,14 +128,35 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, reactive, toRaw } from "vue";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
 import { useRoute } from "vue-router";
+import jwtDecode from "jwt-decode";
+import { useCookies } from "@vueuse/integrations/useCookies";
+import { loadStripe } from "@stripe/stripe-js";
+import { useToast } from "vue-toastification";
+import { useRouter } from "vue-router";
+
 const route = useRoute();
 const id = route.params.id;
-
 let annonce = ref([]);
+const publishableKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+const stripePromise = loadStripe(publishableKey);
+const successURL = `https://${window.location.host}/payment/success`;
+const cancelURL = `https://${window.location.host}/payment/cancel`;
+const cookies = useCookies();
+const decodedToken = jwtDecode(cookies.get("token"));
+const isOwner = ref(false);
+const toast = useToast();
+const router = useRouter();
+
+const lineItems = reactive([
+    {
+        price: "",
+        quantity: 1,
+    },
+]);
 
 onBeforeMount(async () => {
     const annonces = await fetch(`${ENTRYPOINT}/annonces/${id}`, {
@@ -138,5 +167,56 @@ onBeforeMount(async () => {
     });
     const data = await annonces.json();
     annonce.value = data;
+    lineItems[0].price = data["stripe_price_id"];
+
+    if (data["annonceOwner"]["email"] === decodedToken.email) {
+        isOwner.value = true;
+    }
 });
+
+const buy = async () => {
+    if (confirm("Voulez vous vraiment acheter cette annonce ?")) {
+        const stripe = await stripePromise;
+        const { error } = await stripe.redirectToCheckout({
+            mode: "payment",
+            lineItems: lineItems,
+            successUrl: successURL,
+            cancelUrl: cancelURL,
+            customerEmail: decodedToken.email,
+        });
+        if (error) {
+            console.error("Error:", error);
+        }
+    }
+};
+
+const deleteAnnonce = async () => {
+    if (confirm("Voulez vous vraiment supprimer votre annonce ?")) {
+        for (const mediaObjects of annonce.value.images) {
+            await fetch(
+                `${ENTRYPOINT}/media_objects/${toRaw(mediaObjects).id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${cookies.get("token")}`,
+                    },
+                }
+            );
+        }
+        const deleteAnnonceFetch = await fetch(`${ENTRYPOINT}/annonces/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${cookies.get("token")}`,
+            },
+        });
+        if (deleteAnnonceFetch.ok) {
+            await router.push("/");
+            toast.success("Votre annonce a bien été supprimée");
+        } else {
+            toast.error("Une erreur est survenue.");
+        }
+    }
+};
 </script>

@@ -23,14 +23,14 @@ class AnnoncesFixtures extends Fixture {
         // $user->setPassword('user'); // user
         // $user->setRoles(['ROLE_USER']);
         
-        $faker = Factory::create('fr_FR');
-        for ($i = 0; $i < 5; $i++) {
-            $annonces = new Annonces();
-            $annonces->setTitle($faker->sentence(3));
-            $annonces->setDescription($faker->paragraph(1));
-            $annonces->setPrice($faker->randomFloat(2, 10, 100));
-            $manager->persist($annonces);
-        }
-        $manager->flush();
+        // $faker = Factory::create('fr_FR');
+        // for ($i = 0; $i < 5; $i++) {
+        //     $annonces = new Annonces();
+        //     $annonces->setTitle($faker->sentence(3));
+        //     $annonces->setDescription($faker->paragraph(1));
+        //     $annonces->setPrice($faker->randomFloat(2, 10, 100));
+        //     $manager->persist($annonces);
+        // }
+        // $manager->flush();
     }
 }

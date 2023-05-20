@@ -39,12 +39,12 @@ import jwtDecode from "jwt-decode";
 const cookies = useCookies();
 const token = cookies.get("token");
 let decoded = token ? jwtDecode(token) : null;
-const isConnected = decoded ? decoded.roles.includes("ROLE_ANNONCEUR") : false;
+const isConnected = decoded ? decoded.roles.includes("ROLE_VENDEUR") : false;
 
 let items = ref([]);
 
 onBeforeMount(async () => {
-    const response = await fetch(`${ENTRYPOINT}/annonces`);
+    const response = await fetch(`${ENTRYPOINT}/annonces?exists[buyer]=false`);
     const data = await response.json();
     items.value = data["hydra:member"];
 });

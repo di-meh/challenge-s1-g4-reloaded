@@ -29,6 +29,14 @@ class UserFixtures extends Fixture {
         $user->setRoles(['ROLE_USER']);
         $user->setVerified(true);
         $manager->persist($user);
+        
+        $vendeur = new User();
+        $vendeur->setEmail('vendeur@example.com');
+        $vendeur->setUsername('vendeur');
+        $vendeur->setPassword($this->passwordHasher->hashPassword($vendeur, 'vendeur'));
+        $vendeur->setRoles(['ROLE_VENDEUR']);
+        $vendeur->setVerified(true);
+        $manager->persist($vendeur);
 
         $manager->flush();
     }

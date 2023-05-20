@@ -21,8 +21,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
-    normalizationContext: ['groups' => ['items:read']],
-    denormalizationContext: ['groups' => ['items:write']],
     operations: [
         new Get(
             security: 'is_granted("ROLE_ADMIN") or object == user',
@@ -58,7 +56,9 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: 'is_granted("ROLE_ADMIN") or object == user',
             securityMessage: 'Only admins and the current user can delete their own user'
         )
-    ]
+    ],
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:write']]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -113,14 +113,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $entrepriseLink = null;
 
-    #[Groups(['items:read','items:write'])]
     #[ORM\OneToMany(mappedBy: 'annonceOwner', targetEntity: Annonces::class)]
     private Collection $annonces;
+
+    #[Groups(['user:read','user:write'])]
+    #[ORM\OneToMany(mappedBy: 'buyer', targetEntity: Annonces::class)]
+    private Collection $bought;
 
     public function __construct()
     {
         $this->annonces = new ArrayCollection();
         $this->demandes = new ArrayCollection();
+        $this->bought = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -303,6 +307,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($annonce->getAnnonceOwner() === $this) {
                 $annonce->setAnnonceOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Annonces>
+     */
+    public function getBought(): Collection
+    {
+        return $this->bought;
+    }
+
+    public function addBought(Annonces $bought): self
+    {
+        if (!$this->bought->contains($bought)) {
+            $this->bought->add($bought);
+            $bought->setBuyer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBought(Annonces $bought): self
+    {
+        if ($this->bought->removeElement($bought)) {
+            // set the owning side to null (unless already changed)
+            if ($bought->getBuyer() === $this) {
+                $bought->setBuyer(null);
             }
         }
 
