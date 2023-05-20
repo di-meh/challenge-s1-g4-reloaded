@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put; 
+use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\GetCollection;
 
 
@@ -27,11 +27,11 @@ use ApiPlatform\Metadata\GetCollection;
             securityMessage: 'Only sellers can create articles'
         ),
         new Put(
-            security: "is_granted('ROLE_ADMIN') or object.annonceOwner == user",
+            security: "is_granted('ROLE_ADMIN') or object.getAnnonceOwner() == user",
             securityMessage: 'Only admins and the current user can update their own articles'
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN') or object.annonceOwner == user",
+            security: "is_granted('ROLE_ADMIN') or object.getAnnonceOwner() == user",
             securityMessage: 'Only admins and the current user can delete their own articles'
         )
     ]

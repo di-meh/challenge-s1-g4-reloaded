@@ -1,5 +1,3 @@
 <template>
-    <div>
-        Payment Cancel
-    </div>
+    <div>Payment Cancel</div>
 </template>

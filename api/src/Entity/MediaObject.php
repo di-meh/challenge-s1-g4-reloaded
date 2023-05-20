@@ -5,6 +5,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
@@ -19,25 +20,21 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[Vich\Uploadable]
 #[ORM\Entity]
 #[ApiResource(
-    normalizationContext: ['groups' => ['media_object:read']], 
-    denormalizationContext: ['groups' => ['media_object:write']],
     types: ['https://schema.org/MediaObject'],
     operations: [
         new Get(),
         new GetCollection(),
         new Post(
-            controller: CreateMediaObjectAction::class, 
-            deserialize: false, 
-            validationContext: ['groups' => ['Default', 'media_object_create']], 
+            controller: CreateMediaObjectAction::class,
             openapi: new Model\Operation(
                 requestBody: new Model\RequestBody(
                     content: new \ArrayObject([
                         'multipart/form-data' => [
                             'schema' => [
-                                'type' => 'object', 
+                                'type' => 'object',
                                 'properties' => [
                                     'file' => [
-                                        'type' => 'string', 
+                                        'type' => 'string',
                                         'format' => 'binary'
                                     ]
                                 ]
@@ -45,9 +42,17 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                         ]
                     ])
                 )
-            )
+            ),
+            validationContext: ['groups' => ['Default', 'media_object_create']],
+            deserialize: false
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN') or object.getAnnonces().getAnnonceOwner() == user",
+            securityMessage: 'Only admins and the current user can delete their own articles'
         )
-    ]
+    ],
+    normalizationContext: ['groups' => ['media_object:read']],
+    denormalizationContext: ['groups' => ['media_object:write']]
 )]
 class MediaObject
 {
@@ -64,7 +69,7 @@ class MediaObject
     public ?File $file = null;
 
     #[Groups(['items:read'])]
-    #[ORM\Column(nullable: true)] 
+    #[ORM\Column(nullable: true)]
     public ?string $filePath = null;
 
     #[ORM\ManyToOne(inversedBy: 'images')]

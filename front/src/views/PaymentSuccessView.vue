@@ -1,5 +1,3 @@
 <template>
-    <div>
-        Payment Success
-    </div>
+    <div>Payment Success</div>
 </template>
