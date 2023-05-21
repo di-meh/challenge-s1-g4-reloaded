@@ -24,9 +24,16 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push api image
         uses: docker/build-push-action@v3
         with:
           context: "{{defaultContext}}:api"
           push: true
           tags: mides/challenge-s1-api-platform:latest
+
+      - name: Build and push front image
+        uses: docker/build-push-action@v3
+        with:
+          context: "{{defaultContext}}:front"
+          push: true
+          tags: mides/challenge-s1-front:latest
