@@ -22,13 +22,18 @@ services:
       MERCURE_URL: ${CADDY_MERCURE_URL:-http://caddy/.well-known/mercure}
       MERCURE_PUBLIC_URL: https://${SERVER_NAME:-localhost}/.well-known/mercure
       MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      STRIPE_PUBLIC_KEY: ${STRIPE_PUBLIC_KEY}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
 
   front:
     build:
       context: ./front
       target: prod
     environment:
-      VITE_PUBLIC_ENTRYPOINT: http://caddy/api
+      VITE_PUBLIC_ENTRYPOINT: https://localhost
+      VITE_STRIPE_PUBLIC_KEY: ${STRIPE_PUBLIC_KEY}
+      VITE_STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
 
   caddy:
     build:
@@ -74,6 +79,13 @@ services:
       # you may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./api/docker/db/data:/var/lib/postgresql/data
 ###< doctrine/doctrine-bundle ###
+  adminer:
+    depends_on:
+      - database
+    image: adminer
+    ports:
+      - 8080:8080
+
 
 # Mercure is installed as a Caddy module, prevent the Flex recipe from installing another service
 ###> symfony/mercure-bundle ###
