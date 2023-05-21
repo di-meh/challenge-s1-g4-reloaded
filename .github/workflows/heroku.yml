@@ -28,3 +28,4 @@ jobs:
           HD_JWT_PASSPHRASE: ${{ secrets.JWT_PASSPHRASE }}
           HD_MAILER_DSN: ${{ secrets.MAILER_DSN }}
           HD_FRONT_URL: ${{ secrets.FRONT_URL }}
+          HD_TRUSTED_HOSTS: ${{ secrets.TRUSTED_HOSTS }}
