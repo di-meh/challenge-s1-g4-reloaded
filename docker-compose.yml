@@ -31,7 +31,7 @@ services:
       context: ./front
       target: prod
     environment:
-      VITE_PUBLIC_ENTRYPOINT: http://caddy/api
+      VITE_PUBLIC_ENTRYPOINT: https://localhost
       VITE_STRIPE_PUBLIC_KEY: ${STRIPE_PUBLIC_KEY}
       VITE_STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
 

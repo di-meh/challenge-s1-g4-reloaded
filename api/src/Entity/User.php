@@ -67,13 +67,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['user:post', 'user:put', 'items:read', 'items:write'])]
+    #[Groups(['user:read','user:post', 'user:put', 'items:read', 'items:write'])]
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
     private ?string $email = null;
 
-    #[Groups(['user:put:change_role', 'user:post', 'user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
+    #[Groups(['user:read','user:put:change_role', 'user:post', 'user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
     #[ORM\Column]
     private array $roles = [];
 
@@ -85,7 +85,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank]
     private ?string $password = null;
 
-    #[Groups(['user:post', 'user:put', 'items:read','items:write', 'demandes:read'])]
+    #[Groups(['user:read','user:post', 'user:put', 'items:read','items:write', 'demandes:read'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     private ?string $username = null;
@@ -116,7 +116,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'annonceOwner', targetEntity: Annonces::class)]
     private Collection $annonces;
 
-    #[Groups(['user:read','user:write'])]
+    #[Groups(['user:write'])]
     #[ORM\OneToMany(mappedBy: 'buyer', targetEntity: Annonces::class)]
     private Collection $bought;
 
