@@ -2,6 +2,8 @@ name: Push & deploy docker image to Docker Hub
 
 on:
   workflow_dispatch:
+    branches:
+      - dev
 
 jobs:
   docker:
