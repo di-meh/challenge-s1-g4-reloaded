@@ -7,7 +7,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: prod
-
     steps:
       - uses: actions/checkout@v3
 
@@ -17,3 +16,16 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "challenge-s1-reloaded-api"
           appdir: api
+        env: 
+          HD_APP_ENV: prod
+          HD_APP_SECRET: ${{ secrets.APP_SECRET }}
+          HD_STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+          HD_STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          HD_STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          HD_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          HD_JWT_SECRET_KEY: "%kernel.project_dir%/config/jwt/private.pem"
+          HD_JWT_PUBLIC_KEY: "%kernel.project_dir%/config/jwt/public.pem"
+          HD_JWT_PASSPHRASE: ${{ secrets.JWT_PASSPHRASE }}
+          HD_MAILER_DSN: ${{ secrets.MAILER_DSN }}
+          HD_FRONT_URL: ${{ secrets.FRONT_URL }}
+          HD_TRUSTED_HOSTS: ${{ secrets.TRUSTED_HOSTS }}
