@@ -21,9 +21,7 @@
                                 >
                                     <img
                                         :src="
-                                            import.meta.env
-                                                .VITE_PUBLIC_ENTRYPOINT +
-                                            '/media/' +
+                                            imageEntryPoint +
                                             annonce.images[0].filePath
                                         "
                                         alt=""
@@ -52,12 +50,7 @@
                                     class="absolute inset-0 overflow-hidden rounded-md"
                                 >
                                     <img
-                                        :src="
-                                            import.meta.env
-                                                .VITE_PUBLIC_ENTRYPOINT +
-                                            '/media/' +
-                                            image.filePath
-                                        "
+                                        :src="imageEntryPoint + image.filePath"
                                         alt=""
                                         class="h-full w-full object-cover object-center"
                                     />
@@ -80,11 +73,7 @@
                             :key="image.id"
                         >
                             <img
-                                :src="
-                                    import.meta.env.VITE_PUBLIC_ENTRYPOINT +
-                                    '/media/' +
-                                    image.filePath
-                                "
+                                :src="imageEntryPoint + image.filePath"
                                 :alt="image.alt"
                                 class="h-full w-full object-cover object-center sm:rounded-lg"
                             />
@@ -149,6 +138,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
 
+const imageEntryPoint = import.meta.env.VITE_PUBLIC_ENTRYPOINT + "/media/";
 const route = useRoute();
 const id = route.params.id;
 let annonce = ref([]);
