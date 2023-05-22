@@ -27,7 +27,11 @@ defineProps({
         <div class="relative">
             <div class="relative h-72 w-full overflow-hidden rounded-lg">
                 <img
-                    :src="'/media/' + image"
+                    :src="
+                        import.meta.env.VITE_PUBLIC_ENTRYPOINT +
+                        '/media/' +
+                        image
+                    "
                     alt=""
                     class="h-full w-full object-cover object-center"
                 />

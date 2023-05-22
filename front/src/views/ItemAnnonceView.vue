@@ -21,6 +21,8 @@
                                 >
                                     <img
                                         :src="
+                                            import.meta.env
+                                                .VITE_PUBLIC_ENTRYPOINT +
                                             '/media/' +
                                             annonce.images[0].filePath
                                         "
@@ -50,7 +52,12 @@
                                     class="absolute inset-0 overflow-hidden rounded-md"
                                 >
                                     <img
-                                        :src="'/media/' + image.filePath"
+                                        :src="
+                                            import.meta.env
+                                                .VITE_PUBLIC_ENTRYPOINT +
+                                            '/media/' +
+                                            image.filePath
+                                        "
                                         alt=""
                                         class="h-full w-full object-cover object-center"
                                     />
@@ -73,7 +80,11 @@
                             :key="image.id"
                         >
                             <img
-                                :src="'/media/' + image.filePath"
+                                :src="
+                                    import.meta.env.VITE_PUBLIC_ENTRYPOINT +
+                                    '/media/' +
+                                    image.filePath
+                                "
                                 :alt="image.alt"
                                 class="h-full w-full object-cover object-center sm:rounded-lg"
                             />
