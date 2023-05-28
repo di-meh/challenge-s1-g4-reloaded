@@ -182,6 +182,8 @@ const navigation = [
     { name: "Home", routeName: "home", href: "/" },
     { name: "Register", routeName: "register", href: "/register" },
     { name: "Login", routeName: "login", href: "/login" },
+    { name: "Bids", routeName: "bids", href: "/bids" },
+    { name: "Create bid", routeName: "create-bid", href: "/create-bid" },
     { name: "vendeur", routeName: "demande_vendeur", href: "/vendeur" },
     { name: "annonceur", routeName: "demande_annonceur", href: "/annonceur" },
     { name: "demandes", routeName: "demandes", href: "/admin/demandes" },

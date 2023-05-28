@@ -7,6 +7,7 @@ import { createPinia } from "pinia";
 import { plugin, defaultConfig } from "@formkit/vue";
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
+import VueCountdown from "@chenfengyuan/vue-countdown";
 
 const pinia = createPinia();
 const app = createApp(App);
@@ -20,5 +21,6 @@ app.use(router);
 app.use(pinia);
 app.use(plugin, defaultConfig);
 app.use(Toast, toastOptions);
+app.component("VueCountdown", VueCountdown);
 
 app.mount("#app");

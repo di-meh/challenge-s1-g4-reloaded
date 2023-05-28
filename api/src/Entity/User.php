@@ -65,9 +65,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['bid:read', 'bid:write', 'bid:update'])]
     private ?int $id = null;
 
-    #[Groups(['user:read','user:post', 'user:put', 'items:read', 'items:write', 'demandes:read'])]
+    #[Groups(['user:read','user:post', 'user:put', 'items:read', 'items:write', 'demandes:read', 'bid:read'])]
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
@@ -92,6 +93,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(options: ['default' => false])]
     private ?bool $verified = false;
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Bid::class, orphanRemoval: true)]
+    private Collection $bids;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Bid::class)]
+    private Collection $bidsInProgress;
+
+    public function __construct()
+    {
+        $this->bids = new ArrayCollection();
+        $this->bidsInProgress = new ArrayCollection();
+    }
 
     #[Groups(['user:put'])]
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Demandes::class)]
@@ -217,6 +229,65 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerified(bool $verified): self
     {
         $this->verified = $verified;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Bid>
+     */
+    public function getBids(): Collection
+    {
+        return $this->bids;
+    }
+
+    public function addBid(Bid $bid): self
+    {
+        if (!$this->bids->contains($bid)) {
+            $this->bids->add($bid);
+            $bid->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBid(Bid $bid): self
+    {
+        if ($this->bids->removeElement($bid)) {
+            // set the owning side to null (unless already changed)
+            if ($bid->getCreator() === $this) {
+                $bid->setCreator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Bid>
+     */
+    public function getBidsInProgress(): Collection
+    {
+        return $this->bidsInProgress;
+    }
+
+    public function addBidsInProgress(Bid $bidsInProgress): self
+    {
+        if (!$this->bidsInProgress->contains($bidsInProgress)) {
+            $this->bidsInProgress->add($bidsInProgress);
+            $bidsInProgress->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBidsInProgress(Bid $bidsInProgress): self
+    {
+        if ($this->bidsInProgress->removeElement($bidsInProgress)) {
+            // set the owning side to null (unless already changed)
+            if ($bidsInProgress->getOwner() === $this) {
+                $bidsInProgress->setOwner(null);
+            }
+        }
 
         return $this;
     }

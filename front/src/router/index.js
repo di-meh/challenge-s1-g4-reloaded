@@ -4,6 +4,10 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import UpdateUserView from "@/views/UpdateUserView.vue";
+import CreateBidView from "@/views/bid/CreateBidView.vue";
+import BidsView from "@/views/bid/BidsView.vue";
+import BidView from "@/views/bid/BidView.vue";
+import UpdateBidView from "@/views/bid/UpdateBidView.vue";
 import DemandeVendeurView from "@/views/DemandeVendeurView.vue";
 import DemandeAnnonceurView from "@/views/DemandeAnnonceurView.vue";
 import AdminDemandesView from "@/views/AdminDemandesView.vue";
@@ -116,6 +120,47 @@ const router = createRouter({
       path: "/update-user",
       name: "Update_user",
       component: UpdateUserView,
+    },
+    {
+      path: "/bids/:id",
+      name: "bid",
+      component: BidView,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          next();
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
+      path: "/bids",
+      name: "bids",
+      component: BidsView,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          next();
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
+      path: "/create-bid",
+      name: "create-bid",
+      component: CreateBidView,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          next();
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
+      path: "/update-bid/:id",
+      name: "update-bid",
+      component: UpdateBidView,
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem("user") && cookies.get("token")) {
           next();
