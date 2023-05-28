@@ -1,4 +1,1 @@
-export const ENTRYPOINT =
-  typeof window === "undefined"
-    ? import.meta.env.VITE_PUBLIC_ENTRYPOINT
-    : window.origin + "/api";
+export const ENTRYPOINT = import.meta.env.VITE_PUBLIC_ENTRYPOINT + "/api";

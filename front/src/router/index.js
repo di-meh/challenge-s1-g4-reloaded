@@ -8,12 +8,23 @@ import CreateBidView from "@/views/bid/CreateBidView.vue";
 import BidsView from "@/views/bid/BidsView.vue";
 import BidView from "@/views/bid/BidView.vue";
 import UpdateBidView from "@/views/bid/UpdateBidView.vue";
+import DemandeVendeurView from "@/views/DemandeVendeurView.vue";
+import DemandeAnnonceurView from "@/views/DemandeAnnonceurView.vue";
+import AdminDemandesView from "@/views/AdminDemandesView.vue";
+import AnnonceView from "@/views/AnnonceView.vue";
+import NewAnnoncesView from "@/views/NewAnnoncesView.vue";
+import ItemAnnonceView from "@/views/ItemAnnonceView.vue";
 import { useCookies } from "@vueuse/integrations/useCookies";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
+import PaymentSuccess from "@/views/PaymentSuccessView.vue";
+import PaymentCancel from "@/views/PaymentCancelView.vue";
 import { ENTRYPOINT } from "../../config/entrypoint";
 import ForgotPasswordView from "@/views/ForgotPasswordView.vue";
+import jwtDecode from "jwt-decode";
+import { useToast } from "vue-toastification";
 
 const cookies = useCookies();
+const toast = useToast();
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +43,35 @@ const router = createRouter({
       path: "/register",
       name: "register",
       component: RegisterView,
+    },
+    {
+      path: "/annonces",
+      name: "annonces",
+      component: AnnonceView,
+    },
+    {
+      path: "/annonces/create",
+      name: "annonces_create",
+      component: NewAnnoncesView,
+      beforeEnter: (to, from, next) => {
+        const token = cookies.get("token");
+        const decodedToken = jwtDecode(token);
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          if (!decodedToken.roles.includes("ROLE_VENDEUR")) {
+            toast.error("Vous devez être vendeur");
+            next("/");
+          } else {
+            next();
+          }
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
+      path: "/annonces/:id",
+      name: "annonces_id",
+      component: ItemAnnonceView,
     },
     {
       path: "/forgot-password",
@@ -123,7 +163,74 @@ const router = createRouter({
       },
     },
     {
-      path: "/:pathMatch(.*)/*",
+      path: "/vendeur",
+      name: "demande_vendeur",
+      component: DemandeVendeurView,
+      beforeEnter: (to, from, next) => {
+        const token = cookies.get("token");
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          const decodedToken = jwtDecode(token);
+          if (decodedToken.roles.includes("ROLE_VENDEUR")) {
+            toast.error("Vous êtes déjà vendeur");
+          } else {
+            next();
+          }
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
+      path: "/annonceur",
+      name: "demande_annonceur",
+      component: DemandeAnnonceurView,
+      beforeEnter: (to, from, next) => {
+        const token = cookies.get("token");
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          const decodedToken = jwtDecode(token);
+          if (decodedToken.roles.includes("ROLE_ANNONCEUR")) {
+            toast.error("Vous êtes déjà annonceur");
+          } else {
+            next();
+          }
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
+      path: "/admin/demandes",
+      name: "demandes",
+      component: AdminDemandesView,
+      beforeEnter: (to, from, next) => {
+        const token = cookies.get("token");
+        if (localStorage.getItem("user") && cookies.get("token")) {
+          const decodedToken = jwtDecode(token);
+          if (decodedToken.roles.includes("ROLE_ADMIN")) {
+            next();
+          } else {
+            toast.error(
+              "Vous devez être administrateur pour accéder à cette page"
+            );
+            next("/login");
+          }
+        } else {
+          next("/login");
+        }
+      },
+    },
+    {
+      path: "/payment/success",
+      name: "payment_success",
+      component: PaymentSuccess,
+    },
+    {
+      path: "/payment/cancel",
+      name: "payment_cancel",
+      component: PaymentCancel,
+    },
+    {
+      path: "/:pathMatch(.*)*",
       name: "not-found",
       component: () => import("../views/NotFoundView.vue"),
     },
