@@ -38,10 +38,6 @@ export const useUserStore = defineStore("user", {
         },
         body: JSON.stringify(values),
       });
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error["message"]);
-      }
       const userToken = await response.json();
       if (userToken.token) {
         cookies.set("token", userToken.token);

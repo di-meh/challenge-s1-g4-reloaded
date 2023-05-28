@@ -1,6 +1,9 @@
 name: Deploy to Heroku
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -29,3 +32,4 @@ jobs:
           HD_MAILER_DSN: ${{ secrets.MAILER_DSN }}
           HD_FRONT_URL: ${{ secrets.FRONT_URL }}
           HD_TRUSTED_HOSTS: ${{ secrets.TRUSTED_HOSTS }}
+          HD_CORS_ALLOW_ORIGIN: ${{ secrets.CORS_ALLOW_ORIGIN }}

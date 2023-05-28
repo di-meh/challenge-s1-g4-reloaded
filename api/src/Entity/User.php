@@ -57,8 +57,8 @@ use Symfony\Component\Validator\Constraints as Assert;
             securityMessage: 'Only admins and the current user can delete their own user'
         )
     ],
-    normalizationContext: ['groups' => ['user:read']],
-    denormalizationContext: ['groups' => ['user:write']]
+//    normalizationContext: ['groups' => ['user:read']],
+//    denormalizationContext: ['groups' => ['user:write']]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -67,13 +67,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['user:read','user:post', 'user:put', 'items:read', 'items:write'])]
+    #[Groups(['user:read','user:post', 'user:put', 'items:read', 'items:write', 'demandes:read'])]
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
     private ?string $email = null;
 
-    #[Groups(['user:read','user:put:change_role', 'user:post', 'user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
+    #[Groups(['user:read','user:put:change_role', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
     #[ORM\Column]
     private array $roles = [];
 
@@ -93,30 +93,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(options: ['default' => false])]
     private ?bool $verified = false;
 
-    #[Groups(['user:post', 'user:put'])]
+    #[Groups(['user:put'])]
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Demandes::class)]
     private Collection $demandes;
 
-    #[Groups(['user:post', 'user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
+    #[Groups(['user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
     #[ORM\Column(nullable: true)]
     private ?string $tel = null;
 
-    #[Groups(['user:post', 'user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
+    #[Groups(['user:put', 'user:patch:update_vendeur', 'user:patch:update_annonceur'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $adresse = null;
 
-    #[Groups(['user:post', 'user:put', 'user:patch:update_annonceur'])]
+    #[Groups(['user:put', 'user:patch:update_annonceur'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $entrepriseName = null;
 
-    #[Groups(['user:post', 'user:put', 'user:patch:update_annonceur'])]
+    #[Groups(['user:put', 'user:patch:update_annonceur'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $entrepriseLink = null;
 
     #[ORM\OneToMany(mappedBy: 'annonceOwner', targetEntity: Annonces::class)]
     private Collection $annonces;
 
-    #[Groups(['user:write'])]
+//    #[Groups(['user:write'])]
     #[ORM\OneToMany(mappedBy: 'buyer', targetEntity: Annonces::class)]
     private Collection $bought;
 

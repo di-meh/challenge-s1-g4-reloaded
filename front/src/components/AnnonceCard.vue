@@ -21,13 +21,14 @@ defineProps({
         required: true,
     },
 });
+const imageEntryPoint = import.meta.env.VITE_PUBLIC_ENTRYPOINT + "/media/";
 </script>
 <template>
     <div>
         <div class="relative">
             <div class="relative h-72 w-full overflow-hidden rounded-lg">
                 <img
-                    :src="'/media/' + image"
+                    :src="imageEntryPoint + image"
                     alt=""
                     class="h-full w-full object-cover object-center"
                 />
