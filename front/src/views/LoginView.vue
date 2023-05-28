@@ -72,15 +72,17 @@ const toast = useToast();
 
 const login = async (event) => {
     const values = Object.fromEntries(new FormData(event.target));
-    await userStore
-        .login(values)
-        .then((response) => {
-            if (response.ok) {
-                toast.success("Connecté avec succès!");
-            }
-        })
-        .catch((error) => {
-            toast.error(error.message);
-        });
+    const response = await userStore.login(values);
+    if (response.ok) {
+        toast.success("Connecté avec succès!");
+    } else {
+        if (response.status === 401) {
+            toast.error("Email ou mot de passe incorrect");
+        } else if (response.status === 403) {
+            toast.error("Compte non activé");
+        } else {
+            toast.error("Une erreur est survenue");
+        }
+    }
 };
 </script>
