@@ -99,12 +99,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Bid::class)]
     private Collection $bidsInProgress;
 
-    public function __construct()
-    {
-        $this->bids = new ArrayCollection();
-        $this->bidsInProgress = new ArrayCollection();
-    }
-
     #[Groups(['user:put'])]
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Demandes::class)]
     private Collection $demandes;
@@ -137,6 +131,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->annonces = new ArrayCollection();
         $this->demandes = new ArrayCollection();
         $this->bought = new ArrayCollection();
+        $this->bids = new ArrayCollection();
+        $this->bidsInProgress = new ArrayCollection();
     }
 
     public function getId(): ?int
