@@ -11,7 +11,7 @@
         "doctrine/doctrine-bundle": "^2.8",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.14",
-        "fakerphp/faker": "^1.21",
+        "fakerphp/faker": "^1.22",
         "gesdinet/jwt-refresh-token-bundle": "^1.1",
         "guzzlehttp/guzzle": "^7.4",
         "lexik/jwt-authentication-bundle": "^2.16",
