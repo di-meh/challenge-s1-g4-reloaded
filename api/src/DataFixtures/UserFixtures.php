@@ -29,7 +29,7 @@ class UserFixtures extends Fixture {
         $user->setRoles(['ROLE_USER']);
         $user->setVerified(true);
         $manager->persist($user);
-        
+
         $vendeur = new User();
         $vendeur->setEmail('vendeur@example.com');
         $vendeur->setUsername('vendeur');
@@ -37,6 +37,14 @@ class UserFixtures extends Fixture {
         $vendeur->setRoles(['ROLE_VENDEUR']);
         $vendeur->setVerified(true);
         $manager->persist($vendeur);
+
+        $annonceur = new User();
+        $annonceur->setEmail('annonceur@example.com');
+        $annonceur->setUsername('annonceur');
+        $annonceur->setPassword($this->passwordHasher->hashPassword($annonceur, 'annonceur'));
+        $annonceur->setRoles(['ROLE_ANNONCEUR']);
+        $annonceur->setVerified(true);
+        $manager->persist($annonceur);
 
         $manager->flush();
     }

@@ -89,7 +89,7 @@ class Bid
     #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN')")]
     private ?User $creator = null;
 
-    #[Groups(['bid:read', 'bid:update', 'bid:annonceur'])]
+    #[Groups(['bid:read', 'bid:update'])]
     #[ORM\ManyToOne(inversedBy: 'bidsInProgress')]
     #[ApiProperty(securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('ROLE_ANNONCEUR')")]
     private ?User $owner = null;

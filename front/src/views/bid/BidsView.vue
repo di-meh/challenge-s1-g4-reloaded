@@ -68,8 +68,8 @@
                                     </li>
                                 </ul>
 
-                                <a
-                                    :href="`/bids/${bid.id}`"
+                                <RouterLink
+                                    :to="`/bids/${bid.id}`"
                                     :class="[
                                         'absolute inset-0 rounded-md',
                                         'ring-blue-400 focus:outline-none focus:ring-2',
